@@ -52,6 +52,7 @@ public:
 	afx_msg void OnDrawline();
 	afx_msg void OnFileSaveAs();
 	afx_msg void OnShowred();
+	afx_msg void OnResolution();
 //	afx_msg void OnViewToolbar();
 };
 

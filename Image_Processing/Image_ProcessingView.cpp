@@ -15,8 +15,7 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
-
+using namespace std;
 // CImage_ProcessingView
 
 IMPLEMENT_DYNCREATE(CImage_ProcessingView, CScrollView)
@@ -32,6 +31,7 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(IDM_DRAWLINE, &CImage_ProcessingView::OnDrawline)
 	ON_COMMAND(ID_FILE_SAVE_AS, &CImage_ProcessingView::OnFileSaveAs)
 	ON_COMMAND(IDM_SHOWRED, &CImage_ProcessingView::OnShowred)
+	ON_COMMAND(ID_PIXELREDUCE, &CImage_ProcessingView::OnResolution)
 //	ON_COMMAND(ID_VIEW_TOOLBAR, &CImage_ProcessingView::OnViewToolbar)
 END_MESSAGE_MAP()
 
@@ -266,8 +266,17 @@ void CImage_ProcessingView::OnShowred()
 	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
 }
 
+void CImage_ProcessingView::OnResolution()
+{
+	int a = 1;
+	printf("x = %d \n", a);
+}
+
 
 //void CImage_ProcessingView::OnViewToolbar()
 //{
 //	// TODO: 在此添加命令处理程序代码
 //}
+
+
+

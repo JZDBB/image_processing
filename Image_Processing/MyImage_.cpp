@@ -41,13 +41,15 @@ HRESULT MyImage_::Load(_In_z_ LPCTSTR pszFileName)
 	int h=m_CImage.GetHeight();
 	int nrow=m_CImage.GetPitch();//获得m_CImage每一行像素的RGB所占用的存储空间的大小
 	BYTE *psrc=(BYTE *)m_CImage.GetBits();//获得m_CImage最后一行的像素地址
+	int bits = m_CImage.GetBPP();
+
 	/*创建三维数组并将m_CImage复制进三维数组*/
 	m_pBits= (BYTE***)new   BYTE**[3];   
 	for(int i=0;i<3;i++)  
 	{ 
 		m_pBits[i] = (BYTE**)new  BYTE*[h];   
 	}   
-	for   (int   i=0;   i<3;   i++)   
+	for(int i=0; i<3; i++)   
 	{          
 		for   (int   j=0;   j<h;   j++)         
 		{   
@@ -57,16 +59,31 @@ HRESULT MyImage_::Load(_In_z_ LPCTSTR pszFileName)
 	}
 
 	/*将m_CImage复制进三维数组*/
-
-	for (int j=0;j<h;j++)
+	if ((bits == 24)|| (bits == 32))
 	{
-		for (int k=0;k<w;k++)
+		for (int j=0;j<h;j++)
 		{
-			m_pBits[0][j][k]=psrc[j*nrow+k*3];//B
-			m_pBits[1][j][k]=psrc[j*nrow+k*3+1];//G
-			m_pBits[2][j][k]=psrc[j*nrow+k*3+2];//R
+			for (int k=0;k<w;k++)
+			{
+				m_pBits[0][j][k] = psrc[j*nrow + k * 3];//B
+				m_pBits[1][j][k] = psrc[j*nrow + k * 3 + 1];//G
+				m_pBits[2][j][k] = psrc[j*nrow + k * 3 + 2];//R
+			}
 		}
 	}
+	else
+	{
+		for (int j = 0; j < h; j++)
+		{
+			for (int k = 0; k < w; k++)
+			{
+				m_pBits[0][j][k] = psrc[j*nrow + k];//B
+				m_pBits[1][j][k] = psrc[j*nrow + k];//G
+				m_pBits[2][j][k] = psrc[j*nrow + k];//R
+			}
+		}
+	}
+	
 
 	/*创建三维数组并将m_CImage复制进三维数组*/
 	return( S_OK );//为了与CImge类的Load函数返回值相同
@@ -90,16 +107,33 @@ BOOL  MyImage_::Draw(
 	int nrow=m_CImage.GetPitch();//获得m_CImage每一行像素的RGB所占用的存储空间的大小
 	BYTE *psrc=(BYTE *)m_CImage.GetBits();//获得m_CImage最后一行的像素地址
 	/*将三维数组复制进m_CImage*/
-	for (int j=0;j<h;j++)
-	{
-		for (int k=0;k<w;k++)
-		{
-			psrc[j*nrow+k*3]=m_pBits[0][j][k];//B
-			psrc[j*nrow+k*3+1]=m_pBits[1][j][k];//G
-			psrc[j*nrow+k*3+2]=m_pBits[2][j][k];//R
+	int bits = m_CImage.GetBPP();
 
+	if ((bits == 24)||(bits == 32))
+	{
+		for (int j = 0; j < h; j++)
+		{
+			for (int k = 0; k < w; k++)
+			{
+				psrc[j*nrow + k * 3] = m_pBits[0][j][k];//B
+				psrc[j*nrow + k * 3 + 1] = m_pBits[1][j][k];//G
+				psrc[j*nrow + k * 3 + 2] = m_pBits[2][j][k];//R
+
+			}
 		}
 	}
+	else
+	{
+		for (int j = 0; j < h; j++)
+		{
+			for (int k = 0; k < w; k++)
+			{
+				psrc[j*nrow + k * 3] = m_pBits[0][j][k];
+			}
+		}
+	}
+
+	
 	/*将三维数组复制进m_CImage*/
 
 	return m_CImage.Draw(hDestDC,xDest, yDest,nDestWidth, nDestHeight);//调用CImage的Draw;
@@ -135,15 +169,29 @@ BOOL  MyImage_::Draw(
 	int nrow=m_CImage.GetPitch();//获得m_CImage每一行像素的RGB所占用的存储空间的大小
 	BYTE *psrc=(BYTE *)m_CImage.GetBits();//获得m_CImage最后一行的像素地址
 	/*将三维数组复制进m_CImage*/
+	int bits = m_CImage.GetBPP();
 
-	for (int j=0;j<h;j++)
+	if ((bits == 24) || (bits == 32))
 	{
-		for (int k=0;k<w;k++)
+		for (int j = 0; j < h; j++)
 		{
-			psrc[j*nrow+k*3]=m_pBits[0][j][k];//B
-			psrc[j*nrow+k*3+1]=m_pBits[1][j][k];//G
-			psrc[j*nrow+k*3+2]=m_pBits[2][j][k];//R
+			for (int k = 0; k < w; k++)
+			{
+				psrc[j*nrow + k * 3] = m_pBits[0][j][k];//B
+				psrc[j*nrow + k * 3 + 1] = m_pBits[1][j][k];//G
+				psrc[j*nrow + k * 3 + 2] = m_pBits[2][j][k];//R
 
+			}
+		}
+	}
+	else
+	{
+		for (int j = 0; j < h; j++)
+		{
+			for (int k = 0; k < w; k++)
+			{
+				psrc[j*nrow + k] = m_pBits[0][j][k];
+			}
 		}
 	}
 	/*将三维数组复制进m_CImage*/
@@ -164,9 +212,9 @@ HRESULT MyImage_::Save(
 	
 		for (int k=0;k<w;k++)
 		{
-			psrc[j*nrow+k*3]=m_pBits[0][j][k];//B
-			psrc[j*nrow+k*3+1]=m_pBits[1][j][k];//G
-			psrc[j*nrow+k*3+2]=m_pBits[2][j][k];//R
+			psrc[j*nrow + k * 3] = m_pBits[0][j][k];//B
+			psrc[j*nrow + k * 3 + 1] = m_pBits[1][j][k];//G
+			psrc[j*nrow + k * 3 + 2] = m_pBits[2][j][k];//R
 
 		}
 	}
