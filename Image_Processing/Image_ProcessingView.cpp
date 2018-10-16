@@ -31,8 +31,9 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(IDM_DRAWLINE, &CImage_ProcessingView::OnDrawline)
 	ON_COMMAND(ID_FILE_SAVE_AS, &CImage_ProcessingView::OnFileSaveAs)
 	ON_COMMAND(IDM_SHOWRED, &CImage_ProcessingView::OnShowred)
-	ON_COMMAND(ID_PIXELREDUCE, &CImage_ProcessingView::OnResolution)
 //	ON_COMMAND(ID_VIEW_TOOLBAR, &CImage_ProcessingView::OnViewToolbar)
+	ON_COMMAND(ID_RESOLUTION, &CImage_ProcessingView::OnResolution)
+	ON_COMMAND(ID_GRAYCHANGE, &CImage_ProcessingView::OnGraychange)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -187,12 +188,9 @@ void CImage_ProcessingView::OnDrawline()
 		m_Image.m_pBits[1][10][k]=0;//G
 		m_Image.m_pBits[2][10][k]=0;//R
 
-
 	}
 
 	Invalidate(1); //强制调用ONDRAW函数
-
-
 
 }
 
@@ -258,19 +256,12 @@ void CImage_ProcessingView::OnShowred()
 		{
 			m_Image.m_pBits[0][j][k]=0;//B   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
 			m_Image.m_pBits[1][j][k]=0;//G
-
-
 		}
 	}
 
 	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
 }
 
-void CImage_ProcessingView::OnResolution()
-{
-	int a = 1;
-	printf("x = %d \n", a);
-}
 
 
 //void CImage_ProcessingView::OnViewToolbar()
@@ -280,3 +271,15 @@ void CImage_ProcessingView::OnResolution()
 
 
 
+
+
+void CImage_ProcessingView::OnResolution()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void CImage_ProcessingView::OnGraychange()
+{
+	// TODO: 在此添加命令处理程序代码
+}

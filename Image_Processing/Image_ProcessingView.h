@@ -52,8 +52,9 @@ public:
 	afx_msg void OnDrawline();
 	afx_msg void OnFileSaveAs();
 	afx_msg void OnShowred();
-	afx_msg void OnResolution();
 //	afx_msg void OnViewToolbar();
+	afx_msg void OnResolution();
+	afx_msg void OnGraychange();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本

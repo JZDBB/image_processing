@@ -207,17 +207,36 @@ HRESULT MyImage_::Save(
 	int h=m_CImage.GetHeight();
 	int nrow=m_CImage.GetPitch();//获得m_CImage每一行像素的RGB所占用的存储空间的大小
 	BYTE *psrc=(BYTE *)m_CImage.GetBits();//获得m_CImage最后一行的像素地址
-	for (int j=0;j<h;j++)
-	{
-	
-		for (int k=0;k<w;k++)
-		{
-			psrc[j*nrow + k * 3] = m_pBits[0][j][k];//B
-			psrc[j*nrow + k * 3 + 1] = m_pBits[1][j][k];//G
-			psrc[j*nrow + k * 3 + 2] = m_pBits[2][j][k];//R
 
+	int bits = m_CImage.GetBPP();
+
+	if ((bits == 24) || (bits == 32))
+	{
+		for (int j = 0; j < h; j++)
+		{
+
+			for (int k = 0; k < w; k++)
+			{
+				psrc[j*nrow + k * 3] = m_pBits[0][j][k];//B
+				psrc[j*nrow + k * 3 + 1] = m_pBits[1][j][k];//G
+				psrc[j*nrow + k * 3 + 2] = m_pBits[2][j][k];//R
+
+			}
 		}
 	}
+	else
+	{
+		for (int j = 0; j < h; j++)
+		{
+
+			for (int k = 0; k < w; k++)
+			{
+				psrc[j*nrow + k] = m_pBits[0][j][k];//B
+			}
+		}
+	}
+
+	
 	return m_CImage.Save(pszFileName,guidFileType);
 
 }
