@@ -277,9 +277,6 @@ void CImage_ProcessingView::OnResolution()
 
 	int w = m_Image.GetWidth();//获得图像的宽度
 	int h = m_Image.GetHeight();//获得图像的高度
-
-	int bits = m_Image.GetBPP();
-
 	for (int c = 0; c < 3; c++) 
 	{
 		for (int j = 0; j < h; j++)

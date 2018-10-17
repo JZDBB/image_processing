@@ -38,10 +38,9 @@ public:
 	void MyImage_::Destroy() ;//销毁MyImage_类加载到内存中的图像
 	int MyImage_::GetWidth()const;//返回图像的宽度
 	int MyImage_::GetHeight() const;//返回图像的高度
-
-
-
-
+	int MyImage_::GetBPP() const;
+	int MyImage_::GetPitch() const;
+	/*int MyImage_::GetBits() const;*/
 
 
 	BYTE*** m_pBits;//三维数组，用于保存图像的BGR像素值

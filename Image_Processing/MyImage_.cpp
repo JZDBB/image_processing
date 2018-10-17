@@ -47,7 +47,7 @@ HRESULT MyImage_::Load(_In_z_ LPCTSTR pszFileName)
 	m_pBits= (BYTE***)new   BYTE**[3];   
 	for(int i=0;i<3;i++)  
 	{ 
-		m_pBits[i] = (BYTE**)new  BYTE*[h];   
+		m_pBits[i] = (BYTE**)new  BYTE*[h];
 	}   
 	for(int i=0; i<3; i++)   
 	{          
@@ -156,6 +156,22 @@ int MyImage_::GetHeight() const
 {
 	return m_CImage.GetHeight();
 }
+
+int MyImage_::GetBPP() const
+{
+	return m_CImage.GetBPP();
+}
+
+int MyImage_::GetPitch() const
+{
+	return m_CImage.GetPitch();
+}
+
+//void MyImage_::GetBits() const
+//{
+//	return m_CImage.GetBits();
+//}
+
 
 
 BOOL  MyImage_::Draw(
