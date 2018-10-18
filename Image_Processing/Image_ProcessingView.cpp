@@ -279,8 +279,10 @@ void CImage_ProcessingView::OnResolution()
 	int h = m_Image.GetHeight();//获得图像的高度
 
 	int bits = m_Image.GetBPP();
+	int C = 3;
+	if (bits == 8) C = 1;
 
-	for (int c = 0; c < 3; c++) 
+	for (int c = 0; c < C; c++)
 	{
 		for (int j = 0; j < h; j++)
 		{
