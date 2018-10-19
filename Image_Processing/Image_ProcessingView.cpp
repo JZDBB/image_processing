@@ -280,7 +280,8 @@ void CImage_ProcessingView::OnResolution()
 
 	int bits = m_Image.GetBPP();
 	int C = 3;
-	if (bits == 8) C = 1;
+	//if (bits == 8) C = 1;
+	int inter = 5;
 
 	for (int c = 0; c < C; c++)
 	{
@@ -288,7 +289,7 @@ void CImage_ProcessingView::OnResolution()
 		{
 			for (int k = 0; k < w; k++)
 			{
-				if (j % 5 == 0 && k % 5 == 0)
+				/*if (j % 5 == 0 && k % 5 == 0)
 				{
 					for (int x = 0; x < 5; x++) 
 					{
@@ -297,14 +298,15 @@ void CImage_ProcessingView::OnResolution()
 							try 
 							{
 								m_Image.m_pBits[c][j + x][k + y] = m_Image.m_pBits[c][j][k];
-							
+								throw 1;
+								throw "error";
 							}
 							catch(char *str){}
 						}
 					}
 					
-				}
-					
+				}*/
+				m_Image.m_pBits[c][j][k] = m_Image.m_pBits[c][j / inter * inter][k / inter * inter];
 			}
 		}
 	}
@@ -315,5 +317,27 @@ void CImage_ProcessingView::OnResolution()
 void CImage_ProcessingView::OnGraychange()
 {
 	// TODO: 在此添加命令处理程序代码
-	
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
+
+	int bits = m_Image.GetBPP();
+	int hierarchical = 2;
+
+	// change image to gray
+	for (int j = 0; j < h; j++)
+	{
+		for (int k = 0; k < w; k++)
+		{
+			int ave = 0.1140 *m_Image.m_pBits[0][j][k] + 0.5870 *m_Image.m_pBits[1][j][k] + 0.2989 *m_Image.m_pBits[2][j][k];
+			m_Image.m_pBits[0][j][k] = ave;
+			m_Image.m_pBits[1][j][k] = ave;
+			m_Image.m_pBits[2][j][k] = ave;
+		}
+	}
+
+
+
+	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
 }
