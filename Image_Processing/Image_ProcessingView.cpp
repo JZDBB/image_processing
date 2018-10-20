@@ -336,8 +336,21 @@ void CImage_ProcessingView::OnGraychange()
 			m_Image.m_pBits[2][j][k] = ave;
 		}
 	}
+	// wait minute 
 
+	int K = 4;
+	// change Gray
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int step = 256 / (K);
+			int value = (step << 1) - 1;
+			m_Image.m_pBits[0][i][j] = (m_Image.m_pBits[0][i][j] / step) * value;
+			m_Image.m_pBits[1][i][j] = (m_Image.m_pBits[1][i][j] / step) * value;
+			m_Image.m_pBits[2][i][j] = (m_Image.m_pBits[2][i][j] / step) * value;
 
-
+		}
+	}
 	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
 }
