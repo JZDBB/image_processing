@@ -564,14 +564,17 @@ void CImage_ProcessingView::OnMidfilter()
 
 	MyImage_ m_Image2;
 	m_Image2.Load(filename);
-
+	
 	for (int i = 1; i < h - 1; i++)
 	{
 		for (int j = 1; j < w - 1; j++)
 		{
-			m_Image.m_pBits[0][i][j] = m_Image2.m_pBits[0][i - 1][j - 1] / 16 + m_Image2.m_pBits[0][i][j - 1] * 2 / 16 + m_Image2.m_pBits[0][i + 1][j - 1] / 16 + m_Image2.m_pBits[0][i - 1][j] * 2 / 16 + m_Image2.m_pBits[0][i][j] * 4 / 16 + m_Image2.m_pBits[0][i + 1][j] * 2 / 16 + m_Image2.m_pBits[0][i - 1][j + 1] / 16 + m_Image2.m_pBits[0][i][j + 1] * 2 / 16 + m_Image2.m_pBits[0][i + 1][j + 1] / 16;
-			m_Image.m_pBits[1][i][j] = m_Image2.m_pBits[1][i - 1][j - 1] / 16 + m_Image2.m_pBits[1][i][j - 1] * 2 / 16 + m_Image2.m_pBits[1][i + 1][j - 1] / 16 + m_Image2.m_pBits[1][i - 1][j] * 2 / 16 + m_Image2.m_pBits[1][i][j] * 4 / 16 + m_Image2.m_pBits[1][i + 1][j] * 2 / 16 + m_Image2.m_pBits[1][i - 1][j + 1] / 16 + m_Image2.m_pBits[1][i][j + 1] * 2 / 16 + m_Image2.m_pBits[1][i + 1][j + 1] / 16;
-			m_Image.m_pBits[2][i][j] = m_Image2.m_pBits[2][i - 1][j - 1] / 16 + m_Image2.m_pBits[2][i][j - 1] * 2 / 16 + m_Image2.m_pBits[2][i + 1][j - 1] / 16 + m_Image2.m_pBits[2][i - 1][j] * 2 / 16 + m_Image2.m_pBits[2][i][j] * 4 / 16 + m_Image2.m_pBits[2][i + 1][j] * 2 / 16 + m_Image2.m_pBits[2][i - 1][j + 1] / 16 + m_Image2.m_pBits[2][i][j + 1] * 2 / 16 + m_Image2.m_pBits[2][i + 1][j + 1] / 16;
+			for (int k = 0; k < 3; k++)
+			{
+				int arr[9] = {m_Image2.m_pBits[k][i - 1][j - 1], m_Image2.m_pBits[k][i][j - 1], m_Image2.m_pBits[k][i + 1][j - 1], m_Image2.m_pBits[k][i - 1][j], m_Image2.m_pBits[k][i][j], m_Image2.m_pBits[k][i + 1][j], m_Image2.m_pBits[k][i - 1][j + 1], m_Image2.m_pBits[k][i][j + 1], m_Image2.m_pBits[k][i + 1][j + 1]};
+				sort(arr, arr + 9);
+				m_Image.m_pBits[k][i][j] = arr[4];
+			}
 		}
 	}
 	Invalidate(1);
