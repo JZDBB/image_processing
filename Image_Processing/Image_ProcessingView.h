@@ -55,6 +55,7 @@ public:
 //	afx_msg void OnViewToolbar();
 	afx_msg void OnResolution();
 	afx_msg void OnGraychange();
+	afx_msg void OnDiff();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本

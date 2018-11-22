@@ -34,6 +34,8 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 //	ON_COMMAND(ID_VIEW_TOOLBAR, &CImage_ProcessingView::OnViewToolbar)
 	ON_COMMAND(ID_RESOLUTION, &CImage_ProcessingView::OnResolution)
 	ON_COMMAND(ID_GRAYCHANGE, &CImage_ProcessingView::OnGraychange)
+	ON_COMMAND(ID_DIFF, &CImage_ProcessingView::OnDiff)
+	ON_COMMAND(ID_DENOISEING, &CImage_ProcessingView::OnDenoiseing)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -355,4 +357,70 @@ void CImage_ProcessingView::OnGraychange()
 }
 
 
+void CImage_ProcessingView::OnDiff()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
+	int bits = m_Image.GetBPP();
+	int hierarchical = 2;
+
+	MyImage_ m_Image2;
+	CFileDialog dlg(TRUE);//同样是打开一个新的对话框，存储别的输入图片
+	if (IDOK == dlg.DoModal())
+	{
+		if (!m_Image2.IsNull())
+			m_Image2.Destroy();
+		m_Image2.Load(dlg.GetPathName());
+		if (m_Image2.IsNull())
+			return;
+
+		for (int i = 0; i < h; i++)
+		{
+			for (int j = 0; j < w; j++)
+			{
+				m_Image.m_pBits[0][i][j] = m_Image.m_pBits[0][i][j] - m_Image2.m_pBits[0][i][j];
+				m_Image.m_pBits[1][i][j] = m_Image.m_pBits[1][i][j] - m_Image2.m_pBits[1][i][j];
+				m_Image.m_pBits[2][i][j] = m_Image.m_pBits[2][i][j] - m_Image2.m_pBits[2][i][j];
+			}
+		}
+		Invalidate(1);
+	}
+
+}
+
+
+void CImage_ProcessingView::OnDenoiseing()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
+	int bits = m_Image.GetBPP();
+	int hierarchical = 2;
+
+	MyImage_ m_Image2;
+	CFileDialog dlg(TRUE);//同样是打开一个新的对话框，存储别的输入图片
+	if (IDOK == dlg.DoModal())
+	{
+		if (!m_Image2.IsNull())
+			m_Image2.Destroy();
+		m_Image2.Load(dlg.GetPathName());
+		if (m_Image2.IsNull())
+			return;
+
+		for (int i = 0; i < h; i++)
+		{
+			for (int j = 0; j < w; j++)
+			{
+				m_Image.m_pBits[0][i][j] = m_Image.m_pBits[0][i][j] / 2 + m_Image2.m_pBits[0][i][j] / 2;
+				m_Image.m_pBits[1][i][j] = m_Image.m_pBits[1][i][j] / 2 + m_Image2.m_pBits[1][i][j] / 2;
+				m_Image.m_pBits[2][i][j] = m_Image.m_pBits[2][i][j] / 2 + m_Image2.m_pBits[2][i][j] / 2;
+			}
+		}
+		Invalidate(1);
+	}
+}
