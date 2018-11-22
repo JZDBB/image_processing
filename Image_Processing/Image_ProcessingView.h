@@ -50,6 +50,7 @@ public:
 	afx_msg void OnFileOpen();
 public:
 	MyImage_ m_Image;
+	CString filename;
 
 	afx_msg void OnDrawline();
 	afx_msg void OnFileSaveAs();

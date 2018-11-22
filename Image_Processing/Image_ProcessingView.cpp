@@ -168,7 +168,8 @@ void CImage_ProcessingView::OnFileOpen()
 	if(IDOK == dlg.DoModal())    //调用函数打开一个对话框，并判断是否打开成功
 	{
 		if(!m_Image.IsNull()) m_Image.Destroy();//判断是否已经有图片，有的话进行清除
-		m_Image.Load(dlg.GetPathName());//获得图片的地址，并且加载图片
+		filename = dlg.GetPathName();
+		m_Image.Load(filename);//获得图片的地址，并且加载图片
 
 		//获得图片的大小，并按其大小设置滚动条的初始窗口大小等参数
 		CSize sizeTotal;
@@ -489,7 +490,33 @@ void CImage_ProcessingView::OnHistogram()
 void CImage_ProcessingView::OnHistequal()
 {
 	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
+	int bits = m_Image.GetBPP();
+	int hierarchical = 2;
+
+	if (bits == 24 || bits == 32)
+	{
+		// change image to gray
+		for (int i = 0; i < h; i++)
+		{
+			for (int j = 0; j < w; j++)
+			{
+				int ave = 0.1140 *m_Image.m_pBits[0][i][j] + 0.5870 *m_Image.m_pBits[1][i][j] + 0.2989 *m_Image.m_pBits[2][i][j];
+				m_Image.m_pBits[0][i][j] = ave;
+				m_Image.m_pBits[1][i][j] = ave;
+				m_Image.m_pBits[2][i][j] = ave;
+			}
+		}
+	}
+	m_Image.calcHistogram();
+
+	paintHistDialog dlg(this);//用一个CImage_ProcessingView的指针取初始化dlg
+	dlg.DoModal();
+
+	Invalidate(1);
 }
 
 
@@ -502,10 +529,50 @@ void CImage_ProcessingView::OnHistnorm()
 void CImage_ProcessingView::OnMeanfilter()
 {
 	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
+	int bits = m_Image.GetBPP();
+	int hierarchical = 2;
+
+	MyImage_ m_Image2;
+	m_Image2.Load(filename);
+
+	for (int i = 1; i < h - 1; i++)
+	{
+		for (int j = 1; j < w - 1; j++)
+		{
+			m_Image.m_pBits[0][i][j] = m_Image2.m_pBits[0][i - 1][j - 1] / 9 + m_Image2.m_pBits[0][i][j - 1] / 9 + m_Image2.m_pBits[0][i + 1][j - 1] / 9 + m_Image2.m_pBits[0][i - 1][j] / 9 + m_Image2.m_pBits[0][i][j] / 9 + m_Image2.m_pBits[0][i + 1][j] / 9 + m_Image2.m_pBits[0][i - 1][j + 1] / 9 + m_Image2.m_pBits[0][i][j + 1] / 9 + m_Image2.m_pBits[0][i + 1][j + 1] / 9;
+			m_Image.m_pBits[1][i][j] = m_Image2.m_pBits[1][i - 1][j - 1] / 9 + m_Image2.m_pBits[1][i][j - 1] / 9 + m_Image2.m_pBits[1][i + 1][j - 1] / 9 + m_Image2.m_pBits[1][i - 1][j] / 9 + m_Image2.m_pBits[1][i][j] / 9 + m_Image2.m_pBits[1][i + 1][j] / 9 + m_Image2.m_pBits[1][i - 1][j + 1] / 9 + m_Image2.m_pBits[1][i][j + 1] / 9 + m_Image2.m_pBits[1][i + 1][j + 1] / 9;
+			m_Image.m_pBits[2][i][j] = m_Image2.m_pBits[2][i - 1][j - 1] / 9 + m_Image2.m_pBits[2][i][j - 1] / 9 + m_Image2.m_pBits[2][i + 1][j - 1] / 9 + m_Image2.m_pBits[2][i - 1][j] / 9 + m_Image2.m_pBits[2][i][j] / 9 + m_Image2.m_pBits[2][i + 1][j] / 9 + m_Image2.m_pBits[2][i - 1][j + 1] / 9 + m_Image2.m_pBits[2][i][j + 1] / 9 + m_Image2.m_pBits[2][i + 1][j + 1] / 9;
+		}
+	}
+	Invalidate(1);
 }
 
 
 void CImage_ProcessingView::OnMidfilter()
 {
 	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
+	int bits = m_Image.GetBPP();
+	int hierarchical = 2;
+
+	MyImage_ m_Image2;
+	m_Image2.Load(filename);
+
+	for (int i = 1; i < h - 1; i++)
+	{
+		for (int j = 1; j < w - 1; j++)
+		{
+			m_Image.m_pBits[0][i][j] = m_Image2.m_pBits[0][i - 1][j - 1] / 16 + m_Image2.m_pBits[0][i][j - 1] * 2 / 16 + m_Image2.m_pBits[0][i + 1][j - 1] / 16 + m_Image2.m_pBits[0][i - 1][j] * 2 / 16 + m_Image2.m_pBits[0][i][j] * 4 / 16 + m_Image2.m_pBits[0][i + 1][j] * 2 / 16 + m_Image2.m_pBits[0][i - 1][j + 1] / 16 + m_Image2.m_pBits[0][i][j + 1] * 2 / 16 + m_Image2.m_pBits[0][i + 1][j + 1] / 16;
+			m_Image.m_pBits[1][i][j] = m_Image2.m_pBits[1][i - 1][j - 1] / 16 + m_Image2.m_pBits[1][i][j - 1] * 2 / 16 + m_Image2.m_pBits[1][i + 1][j - 1] / 16 + m_Image2.m_pBits[1][i - 1][j] * 2 / 16 + m_Image2.m_pBits[1][i][j] * 4 / 16 + m_Image2.m_pBits[1][i + 1][j] * 2 / 16 + m_Image2.m_pBits[1][i - 1][j + 1] / 16 + m_Image2.m_pBits[1][i][j + 1] * 2 / 16 + m_Image2.m_pBits[1][i + 1][j + 1] / 16;
+			m_Image.m_pBits[2][i][j] = m_Image2.m_pBits[2][i - 1][j - 1] / 16 + m_Image2.m_pBits[2][i][j - 1] * 2 / 16 + m_Image2.m_pBits[2][i + 1][j - 1] / 16 + m_Image2.m_pBits[2][i - 1][j] * 2 / 16 + m_Image2.m_pBits[2][i][j] * 4 / 16 + m_Image2.m_pBits[2][i + 1][j] * 2 / 16 + m_Image2.m_pBits[2][i - 1][j + 1] / 16 + m_Image2.m_pBits[2][i][j + 1] * 2 / 16 + m_Image2.m_pBits[2][i + 1][j + 1] / 16;
+		}
+	}
+	Invalidate(1);
 }
