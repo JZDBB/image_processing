@@ -167,6 +167,7 @@ int MyImage_::GetPitch() const
 	return m_CImage.GetPitch();
 }
 
+
 //void MyImage_::GetBits() const
 //{
 //	return m_CImage.GetBits();
@@ -255,4 +256,30 @@ HRESULT MyImage_::Save(
 	
 	return m_CImage.Save(pszFileName,guidFileType);
 
+}
+
+
+
+void MyImage_::calcHistogram(void)//直方图统计
+{
+	BYTE *lpSrc;	//指向源图的指针
+	int w = GetWidth();
+	int h = GetHeight();
+	int gray[256] = {0};	//每个灰度值统计
+	int nrow = m_CImage.GetPitch();//获得m_CImage每一行像素的RGB所占用的存储空间的大小
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			BYTE value = m_pBits[0][i][j];
+			gray[value] ++;
+		}
+	}
+	
+	for (int k = 0; k < 256; k++)
+	{
+		arr[k] = gray[k] / (w*h*1.0f);
+		//Normalization
+	}
 }

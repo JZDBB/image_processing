@@ -41,9 +41,11 @@ public:
 	int MyImage_::GetBPP() const;
 	int MyImage_::GetPitch() const;
 	/*int MyImage_::GetBits() const;*/
+	void MyImage_::calcHistogram(void);
 
 
 	BYTE*** m_pBits;//三维数组，用于保存图像的BGR像素值
+	float arr[256];
 private:
 
 	CImage m_CImage;

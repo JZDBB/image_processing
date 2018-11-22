@@ -11,6 +11,8 @@
 
 #include "Image_ProcessingDoc.h"
 #include "Image_ProcessingView.h"
+#include "paintHistDialog.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -36,6 +38,11 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_GRAYCHANGE, &CImage_ProcessingView::OnGraychange)
 	ON_COMMAND(ID_DIFF, &CImage_ProcessingView::OnDiff)
 	ON_COMMAND(ID_DENOISEING, &CImage_ProcessingView::OnDenoiseing)
+	ON_COMMAND(ID_HISTOGRAM, &CImage_ProcessingView::OnHistogram)
+	ON_COMMAND(ID_HISTNORM, &CImage_ProcessingView::OnHistnorm)
+	ON_COMMAND(ID_HISTEQUAL, &CImage_ProcessingView::OnHistequal)
+	ON_COMMAND(ID_MEANFILTER, &CImage_ProcessingView::OnMeanfilter)
+	ON_COMMAND(ID_MIDFILTER, &CImage_ProcessingView::OnMidfilter)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -265,13 +272,6 @@ void CImage_ProcessingView::OnShowred()
 }
 
 
-
-//void CImage_ProcessingView::OnViewToolbar()
-//{
-//	// TODO: 在此添加命令处理程序代码
-//}
-
-
 void CImage_ProcessingView::OnResolution()
 {
 	// TODO: 在此添加命令处理程序代码
@@ -445,4 +445,63 @@ void CImage_ProcessingView::OnDenoiseing()
 		}	
 		Invalidate(1);
 	}
+}
+
+
+void CImage_ProcessingView::OnHistogram()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
+
+	int bits = m_Image.GetBPP();
+	int hierarchical = 2;
+
+	if (bits == 24 || bits == 32)
+	{
+		// change image to gray
+		for (int i = 0; i < h; i++)
+		{
+			for (int j = 0; j < w; j++)
+			{
+				int ave = 0.1140 *m_Image.m_pBits[0][i][j] + 0.5870 *m_Image.m_pBits[1][i][j] + 0.2989 *m_Image.m_pBits[2][i][j];
+				m_Image.m_pBits[0][i][j] = ave;
+				m_Image.m_pBits[1][i][j] = ave;
+				m_Image.m_pBits[2][i][j] = ave;
+			}
+		}
+	}
+	m_Image.calcHistogram();
+
+	paintHistDialog dlg(this);//用一个CImage_ProcessingView的指针取初始化dlg
+	dlg.DoModal();
+
+	Invalidate(1);
+}
+
+
+void CImage_ProcessingView::OnHistequal()
+{
+	// TODO: 在此添加命令处理程序代码
+
+}
+
+
+void CImage_ProcessingView::OnHistnorm()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void CImage_ProcessingView::OnMeanfilter()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void CImage_ProcessingView::OnMidfilter()
+{
+	// TODO: 在此添加命令处理程序代码
 }

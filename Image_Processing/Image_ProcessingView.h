@@ -52,11 +52,15 @@ public:
 	afx_msg void OnDrawline();
 	afx_msg void OnFileSaveAs();
 	afx_msg void OnShowred();
-//	afx_msg void OnViewToolbar();
 	afx_msg void OnResolution();
 	afx_msg void OnGraychange();
 	afx_msg void OnDiff();
 	afx_msg void OnDenoiseing();
+	afx_msg void OnHistogram();
+	afx_msg void OnHistnorm();
+	afx_msg void OnHistequal();
+	afx_msg void OnMeanfilter();
+	afx_msg void OnMidfilter();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本
