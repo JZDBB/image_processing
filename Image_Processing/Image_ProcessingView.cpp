@@ -391,7 +391,6 @@ void CImage_ProcessingView::OnDiff()
 
 }
 
-
 void CImage_ProcessingView::OnDenoiseing()
 {
 	// TODO: 在此添加命令处理程序代码
@@ -404,23 +403,46 @@ void CImage_ProcessingView::OnDenoiseing()
 
 	MyImage_ m_Image2;
 	CFileDialog dlg(TRUE);//同样是打开一个新的对话框，存储别的输入图片
-	if (IDOK == dlg.DoModal())
-	{
-		if (!m_Image2.IsNull())
-			m_Image2.Destroy();
-		m_Image2.Load(dlg.GetPathName());
-		if (m_Image2.IsNull())
-			return;
+	dlg.m_ofn.Flags |= OFN_ALLOWMULTISELECT;//允许选择多个文件
 
-		for (int i = 0; i < h; i++)
+	dlg.m_ofn.nMaxFile = 20 * 101;//最多可以打开20个文件，每个文件名的字符数<=100
+
+	const DWORD numberOfFileNames = 32;//最多允许32个文件
+	const DWORD fileNameMaxLength = MAX_PATH + 1;
+	const DWORD bufferSize = (numberOfFileNames * fileNameMaxLength) + 1;
+	TCHAR* filenamesBuffer = new TCHAR[bufferSize];
+	// Initialize beginning and end of buffer.
+	filenamesBuffer[0] = NULL;//必须的
+	filenamesBuffer[bufferSize - 1] = NULL;
+
+	// Attach buffer to OPENFILENAME member.
+	dlg.m_ofn.lpstrFile = filenamesBuffer;
+	dlg.m_ofn.nMaxFile = bufferSize;
+
+	CStringArray strArrFilePaths;
+	if (dlg.DoModal() == IDOK)
+	{
+		int k = 0;
+		POSITION pos = dlg.GetStartPosition();//获取第一个文件名的位置
+		while (pos != NULL) //GetNextPathName()返回当前pos的文件名，并将下一个文件名的位置保存到pos中
 		{
-			for (int j = 0; j < w; j++)
+			//strArrFilePaths.Add(dlg.GetNextPathName(pos));
+			if (!m_Image2.IsNull())
+				m_Image2.Destroy();
+			m_Image2.Load(dlg.GetNextPathName(pos));
+			if (m_Image2.IsNull())
+				return;
+			for (int i = 0; i < h; i++)
 			{
-				m_Image.m_pBits[0][i][j] = m_Image.m_pBits[0][i][j] / 2 + m_Image2.m_pBits[0][i][j] / 2;
-				m_Image.m_pBits[1][i][j] = m_Image.m_pBits[1][i][j] / 2 + m_Image2.m_pBits[1][i][j] / 2;
-				m_Image.m_pBits[2][i][j] = m_Image.m_pBits[2][i][j] / 2 + m_Image2.m_pBits[2][i][j] / 2;
+				for (int j = 0; j < w; j++)
+				{
+					m_Image.m_pBits[0][i][j] = (m_Image.m_pBits[0][i][j] / (k + 2))*(k + 1) + m_Image2.m_pBits[0][i][j] / (k + 2);
+					m_Image.m_pBits[1][i][j] = (m_Image.m_pBits[1][i][j] / (k + 2))*(k + 1) + m_Image2.m_pBits[1][i][j] / (k + 2);
+					m_Image.m_pBits[2][i][j] = (m_Image.m_pBits[2][i][j] / (k + 2))*(k + 1) + m_Image2.m_pBits[2][i][j] / (k + 2);
+				}
 			}
-		}
+			k++;
+		}	
 		Invalidate(1);
 	}
 }
