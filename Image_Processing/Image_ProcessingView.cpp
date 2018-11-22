@@ -8,16 +8,19 @@
 #ifndef SHARED_HANDLERS
 #include "Image_Processing.h"
 #endif
-
+#include <vector>
+#include <algorithm>
+#include<cmath>
+using namespace std;
 #include "Image_ProcessingDoc.h"
-#include "Image_ProcessingView.h"
 #include "paintHistDialog.h"
+#include "Image_ProcessingView.h"
 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-using namespace std;
+
 // CImage_ProcessingView
 
 IMPLEMENT_DYNCREATE(CImage_ProcessingView, CScrollView)
@@ -52,6 +55,7 @@ CImage_ProcessingView::CImage_ProcessingView()
 	// TODO: 在此处添加构造代码
 
 }
+
 
 CImage_ProcessingView::~CImage_ProcessingView()
 {

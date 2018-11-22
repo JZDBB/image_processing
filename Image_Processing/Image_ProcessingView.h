@@ -4,6 +4,8 @@
 
 #pragma once
 #include "MyImage_.h"
+#include "Image_ProcessingDoc.h"
+#include "Image_ProcessingView.h"
 
 class CImage_ProcessingView : public CScrollView
 {

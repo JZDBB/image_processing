@@ -9,8 +9,9 @@
 #include "Image_Processing.h"
 #endif
 
-#include "Image_ProcessingDoc.h"
 
+#include "Image_ProcessingDoc.h"
+#include "Image_ProcessingView.h"
 #include <propkey.h>
 
 #ifdef _DEBUG
@@ -20,7 +21,6 @@
 // CImage_ProcessingDoc
 
 IMPLEMENT_DYNCREATE(CImage_ProcessingDoc, CDocument)
-
 BEGIN_MESSAGE_MAP(CImage_ProcessingDoc, CDocument)
 END_MESSAGE_MAP()
 
