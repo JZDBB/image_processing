@@ -42,10 +42,13 @@ public:
 	int MyImage_::GetPitch() const;
 	/*int MyImage_::GetBits() const;*/
 	void MyImage_::calcHistogram(void);
+	void MyImage_::histEqual(void);
 
 
 	BYTE*** m_pBits;//三维数组，用于保存图像的BGR像素值
-	float arr[256];
+	float hist[256];
+	int hist_equal[256];
+
 private:
 
 	CImage m_CImage;

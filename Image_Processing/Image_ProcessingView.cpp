@@ -512,6 +512,21 @@ void CImage_ProcessingView::OnHistequal()
 		}
 	}
 	m_Image.calcHistogram();
+	m_Image.histEqual();
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = m_Image.m_pBits[0][i][j];
+			int new_value = m_Image.hist_equal[value];
+			m_Image.m_pBits[0][i][j] = new_value;
+			m_Image.m_pBits[1][i][j] = new_value;
+			m_Image.m_pBits[2][i][j] = new_value;
+		}
+	}
+
+	m_Image.calcHistogram();
 
 	paintHistDialog dlg(this);//用一个CImage_ProcessingView的指针取初始化dlg
 	dlg.DoModal();

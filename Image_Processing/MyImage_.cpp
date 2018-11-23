@@ -265,7 +265,7 @@ void MyImage_::calcHistogram(void)//直方图统计
 	BYTE *lpSrc;	//指向源图的指针
 	int w = GetWidth();
 	int h = GetHeight();
-	int gray[256] = {0};	//每个灰度值统计
+	int arr[256] = {0};	//每个灰度值统计
 	int nrow = m_CImage.GetPitch();//获得m_CImage每一行像素的RGB所占用的存储空间的大小
 
 	for (int i = 0; i < h; i++)
@@ -273,13 +273,34 @@ void MyImage_::calcHistogram(void)//直方图统计
 		for (int j = 0; j < w; j++)
 		{
 			BYTE value = m_pBits[0][i][j];
-			gray[value] ++;
+			arr[value] ++;
 		}
 	}
 	
 	for (int k = 0; k < 256; k++)
 	{
-		arr[k] = gray[k] / (w*h*1.0f);
+		hist[k] = arr[k] / (w*h*1.0f);
 		//Normalization
+	}
+}
+
+
+void MyImage_::histEqual(void)
+{
+	BYTE *lpSrc;	//指向源图的指针
+	int w = GetWidth();
+	int h = GetHeight();
+
+	calcHistogram();
+	float s[256] = { 0 };//均衡
+	int hist_equal[256] = { 0 };//均衡后
+
+	for (int i = 0; i < 255; i++)
+	{
+		for (int j = 0; j <= i; j++)
+		{
+			s[i] += 255 * hist[j];
+		}
+		hist_equal[i] = floor(s[i]);
 	}
 }
