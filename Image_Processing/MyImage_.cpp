@@ -285,22 +285,22 @@ void MyImage_::calcHistogram(void)//直方图统计
 }
 
 
-void MyImage_::histEqual(void)
-{
-	BYTE *lpSrc;	//指向源图的指针
-	int w = GetWidth();
-	int h = GetHeight();
-
-	calcHistogram();
-	float s[256] = { 0 };//均衡
-	int hist_equal[256] = { 0 };//均衡后
-
-	for (int i = 0; i < 255; i++)
-	{
-		for (int j = 0; j <= i; j++)
-		{
-			s[i] += 255 * hist[j];
-		}
-		hist_equal[i] = floor(s[i]);
-	}
-}
+//void MyImage_::histEqual(void)
+//{
+//	BYTE *lpSrc;	//指向源图的指针
+//	int w = GetWidth();
+//	int h = GetHeight();
+//
+//	calcHistogram();
+//	float s[256] = { 0 };//均衡
+//	int hist_equal[256] = { 0 };//均衡后
+//
+//	for (int i = 0; i < 256; i++)
+//	{
+//		for (int j = 0; j <= i; j++)
+//		{
+//			s[i] += 255 * hist[j];
+//		}
+//		hist_equal[i] = floor(s[i]);
+//	}
+//}

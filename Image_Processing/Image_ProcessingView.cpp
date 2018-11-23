@@ -512,14 +512,26 @@ void CImage_ProcessingView::OnHistequal()
 		}
 	}
 	m_Image.calcHistogram();
-	m_Image.histEqual();
+	/*m_Image.histEqual();*/
+
+	float s[256] = { 0 };//¾ùºâ
+	int hist_equal[256] = { 0 };//¾ùºâºó
+
+	for (int i = 0; i < 256; i++)
+	{
+		for (int j = 0; j <= i; j++)
+		{
+			s[i] += 255 * m_Image.hist[j];
+		}
+		hist_equal[i] = floor(s[i]);
+	}
 
 	for (int i = 0; i < h; i++)
 	{
 		for (int j = 0; j < w; j++)
 		{
 			int value = m_Image.m_pBits[0][i][j];
-			int new_value = m_Image.hist_equal[value];
+			int new_value = hist_equal[value];
 			m_Image.m_pBits[0][i][j] = new_value;
 			m_Image.m_pBits[1][i][j] = new_value;
 			m_Image.m_pBits[2][i][j] = new_value;
