@@ -1,7 +1,6 @@
 
 // Image_ProcessingView.cpp : CImage_ProcessingView 类的实现
 //
-
 #include "stdafx.h"
 // SHARED_HANDLERS 可以在实现预览、缩略图和搜索筛选器句柄的
 // ATL 项目中进行定义，并允许与该项目共享文档代码。
@@ -42,10 +41,11 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_DIFF, &CImage_ProcessingView::OnDiff)
 	ON_COMMAND(ID_DENOISEING, &CImage_ProcessingView::OnDenoiseing)
 	ON_COMMAND(ID_HISTOGRAM, &CImage_ProcessingView::OnHistogram)
-	ON_COMMAND(ID_HISTNORM, &CImage_ProcessingView::OnHistnorm)
 	ON_COMMAND(ID_HISTEQUAL, &CImage_ProcessingView::OnHistequal)
+	ON_COMMAND(ID_HISTMATCH, &CImage_ProcessingView::OnHistmatch)
 	ON_COMMAND(ID_MEANFILTER, &CImage_ProcessingView::OnMeanfilter)
 	ON_COMMAND(ID_MIDFILTER, &CImage_ProcessingView::OnMidfilter)
+	
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -296,23 +296,6 @@ void CImage_ProcessingView::OnResolution()
 		{
 			for (int k = 0; k < w; k++)
 			{
-				/*if (j % 5 == 0 && k % 5 == 0)
-				{
-					for (int x = 0; x < 5; x++) 
-					{
-						for (int y = 0; y < 5; y++) 
-						{
-							try 
-							{
-								m_Image.m_pBits[c][j + x][k + y] = m_Image.m_pBits[c][j][k];
-								throw 1;
-								throw "error";
-							}
-							catch(char *str){}
-						}
-					}
-					
-				}*/
 				m_Image.m_pBits[c][j][k] = m_Image.m_pBits[c][j / inter * inter][k / inter * inter];
 			}
 		}
@@ -345,7 +328,7 @@ void CImage_ProcessingView::OnGraychange()
 	}
 	// wait minute 
 
-	int K = 4;
+	int K = 2; //灰度分辨率等级
 	// change Gray
 	for (int i = 0; i < h; i++)
 	{
@@ -430,8 +413,7 @@ void CImage_ProcessingView::OnDenoiseing()
 		int k = 0;
 		POSITION pos = dlg.GetStartPosition();//获取第一个文件名的位置
 		while (pos != NULL) //GetNextPathName()返回当前pos的文件名，并将下一个文件名的位置保存到pos中
-		{
-			//strArrFilePaths.Add(dlg.GetNextPathName(pos));
+		{//连续叠加多幅图片
 			if (!m_Image2.IsNull())
 				m_Image2.Destroy();
 			m_Image2.Load(dlg.GetNextPathName(pos));
@@ -547,9 +529,132 @@ void CImage_ProcessingView::OnHistequal()
 }
 
 
-void CImage_ProcessingView::OnHistnorm()
+void CImage_ProcessingView::OnHistmatch()
 {
 	// TODO: 在此添加命令处理程序代码
+	MyImage_ m_Image_Match;
+	CFileDialog dlg(TRUE);//同样是打开一个新的对话框，存储别的输入图片
+	if (IDOK == dlg.DoModal())
+	{
+		if (!m_Image_Match.IsNull())
+			m_Image_Match.Destroy();
+		m_Image_Match.Load(dlg.GetPathName());
+		if (m_Image_Match.IsNull())
+			return;
+
+		int w = m_Image_Match.GetWidth();//获得图像的宽度
+		int h = m_Image_Match.GetHeight();//获得图像的高度
+		int arr[256] = { 0 };
+		int G[256] = { 0 };
+		int bits = m_Image_Match.GetBPP();
+		if (bits == 24 || bits == 32)
+		{
+			// change image to gray
+			for (int i = 0; i < h; i++)
+			{
+				for (int j = 0; j < w; j++)
+				{
+					int ave = 0.1140 *m_Image_Match.m_pBits[0][i][j] + 0.5870 *m_Image_Match.m_pBits[1][i][j] + 0.2989 *m_Image_Match.m_pBits[2][i][j];
+					m_Image_Match.m_pBits[0][i][j] = ave;
+					m_Image_Match.m_pBits[1][i][j] = ave;
+					m_Image_Match.m_pBits[2][i][j] = ave;
+				}
+			}
+		}
+
+		for (int i = 0; i < h; i++)
+		{
+			for (int j = 0; j < w; j++)
+			{
+				BYTE value = m_Image_Match.m_pBits[0][i][j];
+				arr[value] ++;
+			}
+		}
+		
+		if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+		int w0 = w;
+		int h0 = h;
+		w = m_Image.GetWidth();//获得图像的宽度
+		h = m_Image.GetHeight();//获得图像的高度
+		for (int i = 0; i < 256; i++)
+		{
+			for (int j = 0; j <= i; j++)
+			{
+				G[i] += float(arr[j]) / w0 / h0 * w * h;
+			}
+		}
+		bits = m_Image.GetBPP();
+		int hierarchical = 2;
+		int n[256] = { 0 };
+		int nMap[256] = { 0 };
+		if (bits == 24 || bits == 32)
+		{
+			// change image to gray
+			for (int i = 0; i < h; i++)
+			{
+				for (int j = 0; j < w; j++)
+				{
+					int ave = 0.1140 *m_Image.m_pBits[0][i][j] + 0.5870 *m_Image.m_pBits[1][i][j] + 0.2989 *m_Image.m_pBits[2][i][j];
+					m_Image.m_pBits[0][i][j] = ave;
+					m_Image.m_pBits[1][i][j] = ave;
+					m_Image.m_pBits[2][i][j] = ave;
+				}
+			}
+		}
+
+		for (int i = 0; i < h; i++)
+		{
+			for (int j = 0; j < w; j++)
+			{
+				BYTE value = m_Image.m_pBits[0][i][j];
+				n[value] ++;
+			}
+		}
+		int count_g = 0;
+		int count_n = 0;
+		int sum = 0;
+		while (true)
+		{
+			if (count_n == 256) break;
+			
+			if (sum < G[count_g]) {
+				//count_n++;
+				sum += n[count_n++];
+				continue;
+			}
+			else {
+				nMap[count_n] = count_g;
+				count_g++;
+			}
+			if (count_g == 255) {
+				nMap[255] = 255;
+				break;
+			}
+		}
+		int k = nMap[255];
+		for (int i = 255; i >= 0; i--)
+		{
+			if (nMap[i] == 0) nMap[i] = k;
+			else k = nMap[i];
+		}
+
+		for (int i = 0; i < h; i++)
+		{
+			for (int j = 0; j < w; j++)
+			{
+				int value = m_Image.m_pBits[0][i][j];
+				m_Image.m_pBits[0][i][j] = nMap[value];
+				m_Image.m_pBits[1][i][j] = nMap[value];
+				m_Image.m_pBits[2][i][j] = nMap[value];
+			}
+		}
+		m_Image.calcHistogram();
+
+		paintHistDialog dlg1(this);//用一个CImage_ProcessingView的指针取初始化dlg
+		dlg1.DoModal();
+
+		Invalidate(1);
+	}
 }
 
 
@@ -606,3 +711,4 @@ void CImage_ProcessingView::OnMidfilter()
 	}
 	Invalidate(1);
 }
+

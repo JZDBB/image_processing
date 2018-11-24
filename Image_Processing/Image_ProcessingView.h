@@ -60,10 +60,11 @@ public:
 	afx_msg void OnDiff();
 	afx_msg void OnDenoiseing();
 	afx_msg void OnHistogram();
-	afx_msg void OnHistnorm();
 	afx_msg void OnHistequal();
+	afx_msg void OnHistmatch();
 	afx_msg void OnMeanfilter();
 	afx_msg void OnMidfilter();
+
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本
