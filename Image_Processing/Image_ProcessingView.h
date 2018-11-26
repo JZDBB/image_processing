@@ -67,6 +67,12 @@ public:
 
 	afx_msg void OnAddnoise();
 	afx_msg void OnTransformfft();
+	afx_msg void OnLowpass();
+	afx_msg void OnHighpass();
+	afx_msg void OnButterlowpass();
+	afx_msg void OnButterhighpass();
+	afx_msg void OnGaussianlowpass();
+	afx_msg void OnGaussianhighpass();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本

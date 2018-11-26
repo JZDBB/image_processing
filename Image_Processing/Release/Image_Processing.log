@@ -1,0 +1,21 @@
+﻿  FFT_transform.cpp
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(10): error C2065: “complex”: 未声明的标识符
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(10): error C2065: “y”: 未声明的标识符
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(10): error C2062: 意外的类型“int”
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(10): error C2143: 语法错误: 缺少“;”(在“{”的前面)
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(10): error C2447: “{”: 缺少函数标题(是否是老式的形式表?)
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(24): error C2065: “complex”: 未声明的标识符
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(24): error C2065: “y”: 未声明的标识符
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(24): error C2988: 不可识别的模板声明/定义
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(24): error C2059: 语法错误:“]”
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(24): error C2143: 语法错误: 缺少“;”(在“{”的前面)
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(24): error C2447: “{”: 缺少函数标题(是否是老式的形式表?)
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(42): error C2065: “complex”: 未声明的标识符
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(42): error C2065: “y”: 未声明的标识符
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(42): error C2062: 意外的类型“int”
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(42): error C2143: 语法错误: 缺少“;”(在“{”的前面)
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(42): error C2447: “{”: 缺少函数标题(是否是老式的形式表?)
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(77): error C2143: 语法错误: 缺少“;”(在“<”的前面)
+  c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(99): note: 参见对正在编译的 类 模板 实例化 "complex_mat<T>" 的引用
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(77): error C4430: 缺少类型说明符 - 假定为 int。注意: C++ 不支持默认 int
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.cpp(77): error C2238: 意外的标记位于“;”之前

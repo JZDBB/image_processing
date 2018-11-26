@@ -787,7 +787,7 @@ void CImage_ProcessingView::OnTransformfft()
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 	int w = m_Image.GetWidth();//获取高度和宽度
 	int h = m_Image.GetHeight();
-
+	
 
 }
 
