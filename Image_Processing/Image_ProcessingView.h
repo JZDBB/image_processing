@@ -65,6 +65,7 @@ public:
 	afx_msg void OnMeanfilter();
 	afx_msg void OnMidfilter();
 
+	afx_msg void OnAddnoise();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本

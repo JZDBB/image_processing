@@ -46,6 +46,7 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_MEANFILTER, &CImage_ProcessingView::OnMeanfilter)
 	ON_COMMAND(ID_MIDFILTER, &CImage_ProcessingView::OnMidfilter)
 	
+	ON_COMMAND(ID_ADDNOISE, &CImage_ProcessingView::OnAddnoise)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -364,6 +365,11 @@ void CImage_ProcessingView::OnDiff()
 		m_Image2.Load(dlg.GetPathName());
 		if (m_Image2.IsNull())
 			return;
+		int w0 = m_Image2.GetWidth();
+		int h0 = m_Image2.GetHeight();
+		if (w0 != w || h0 != h) {
+			return;
+		}
 
 		for (int i = 0; i < h; i++)
 		{
@@ -419,6 +425,11 @@ void CImage_ProcessingView::OnDenoiseing()
 			m_Image2.Load(dlg.GetNextPathName(pos));
 			if (m_Image2.IsNull())
 				return;
+			int w0 = m_Image2.GetWidth();
+			int h0 = m_Image2.GetHeight();
+			if (w0 != w || h0 != h) {
+				return;
+			}
 			for (int i = 0; i < h; i++)
 			{
 				for (int j = 0; j < w; j++)
@@ -712,3 +723,52 @@ void CImage_ProcessingView::OnMidfilter()
 	Invalidate(1);
 }
 
+
+
+void CImage_ProcessingView::OnAddnoise()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) //判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	{
+		OnFileOpen();
+		//_T("请先打开一幅图像！"));
+		return;
+	}
+	//show_flag = 0;	//恢复FLAG
+
+	UpdateData();//获得编辑框用户输入的数据
+
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现错误
+	int w = m_Image.GetWidth();//获取高度和宽度
+	int h = m_Image.GetHeight();
+
+	float p_a = 0.15;//获取噪声点的概率,p_a(黑),p_b（白）
+	float p_b = 0.08;
+
+
+	float P_Sum = p_a + p_b;
+	float xishu = 1 / P_Sum;
+	float p_a_1 = p_a*xishu;
+	for (int i = 0; i <w; i++)
+		for (int j = 0; j <h; j++)
+		{
+			if (rand() / 32767.0<P_Sum)//指定概率rand()产生随机的介于1-32767的数
+			{
+				if (rand() / 32767.0<p_a_1)
+				{
+					m_Image.m_pBits[0][j][i] = 1;         //该像素点显示为黑色
+					m_Image.m_pBits[1][j][i] = 1;
+					m_Image.m_pBits[2][j][i] = 1;
+
+				}
+				else
+				{
+					m_Image.m_pBits[0][j][i] = 255;         //该像素点显示为白色
+					m_Image.m_pBits[1][j][i] = 255;
+					m_Image.m_pBits[2][j][i] = 255;
+				}
+
+			}
+		}
+	Invalidate(1);
+}
