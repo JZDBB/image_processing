@@ -10,6 +10,7 @@
 #include <vector>
 #include <algorithm>
 #include<cmath>
+#include "FFT_transform.h"
 using namespace std;
 #include "Image_ProcessingDoc.h"
 #include "paintHistDialog.h"
@@ -45,8 +46,14 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_HISTMATCH, &CImage_ProcessingView::OnHistmatch)
 	ON_COMMAND(ID_MEANFILTER, &CImage_ProcessingView::OnMeanfilter)
 	ON_COMMAND(ID_MIDFILTER, &CImage_ProcessingView::OnMidfilter)
-	
 	ON_COMMAND(ID_ADDNOISE, &CImage_ProcessingView::OnAddnoise)
+	ON_COMMAND(ID_TRANSFORMFFT, &CImage_ProcessingView::OnTransformfft)
+	ON_COMMAND(ID_LOWPASS, &CImage_ProcessingView::OnLowpass)
+	ON_COMMAND(ID_HIGHPASS, &CImage_ProcessingView::OnHighpass)
+	ON_COMMAND(ID_BUTTERLOWPASS, &CImage_ProcessingView::OnButterlowpass)
+	ON_COMMAND(ID_BUTTERHIGHPASS, &CImage_ProcessingView::OnButterhighpass)
+	ON_COMMAND(ID_GAUSSIANLOWPASS, &CImage_ProcessingView::OnGaussianlowpass)
+	ON_COMMAND(ID_GAUSSIANHIGHPASS, &CImage_ProcessingView::OnGaussianhighpass)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -771,4 +778,51 @@ void CImage_ProcessingView::OnAddnoise()
 			}
 		}
 	Invalidate(1);
+}
+
+
+void CImage_ProcessingView::OnTransformfft()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获取高度和宽度
+	int h = m_Image.GetHeight();
+
+
+}
+
+
+void CImage_ProcessingView::OnLowpass()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void CImage_ProcessingView::OnHighpass()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void CImage_ProcessingView::OnButterlowpass()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void CImage_ProcessingView::OnButterhighpass()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void CImage_ProcessingView::OnGaussianlowpass()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void CImage_ProcessingView::OnGaussianhighpass()
+{
+	// TODO: 在此添加命令处理程序代码
 }
