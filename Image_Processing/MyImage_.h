@@ -43,6 +43,7 @@ public:
 	/*int MyImage_::GetBits() const;*/
 	void MyImage_::calcHistogram(void);
 	//void MyImage_::histEqual(void);
+	void MyImage_::FFT(void);
 
 
 	BYTE*** m_pBits;//三维数组，用于保存图像的BGR像素值

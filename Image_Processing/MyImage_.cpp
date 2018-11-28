@@ -285,6 +285,11 @@ void MyImage_::calcHistogram(void)//直方图统计
 }
 
 
+
+void MyImage_::FFT(void) {
+
+}
+
 //void MyImage_::histEqual(void)
 //{
 //	BYTE *lpSrc;	//指向源图的指针

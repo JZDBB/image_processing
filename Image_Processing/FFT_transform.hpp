@@ -1,8 +1,7 @@
-#include "stdafx.h"
-#include "FFT_transform.h"
-#include <iostream>
-#include "complex"
-#include "complex_mat.h"
+#ifndef FFT_TRANSFORM_HPP
+#define FFT_TRANSFORM_HPP
+
+#include "complex_mat.hpp"
 using namespace std;
 #define PI 3.14159265359
 template <class T>
@@ -67,19 +66,5 @@ void fft2(complex<T> **y, int c, int r) {
 
 }
 
+#endif // !FFT_TRANSFORM_HPP
 
-
-//int main() {
-//
-//    int c = 2;
-//    int r = 2;
-//
-//    complex_mat<float> a(2, 2);
-//    a.y[0][0] = complex<float>(1, 1);
-//    a.y[0][1] = complex<float>(1, 0);
-//    a.y[1][0] = complex<float>(1, 0);
-//    a.y[1][1] = complex<float>(1, 0);
-//
-//    fft2<float>(a.y, 2, 2);
-//    cout<<a.y[0][0]<<", "<<a.y[0][1]<<endl<<a.y[1][0]<<", "<<a.y[1][1]<<endl;
-//}

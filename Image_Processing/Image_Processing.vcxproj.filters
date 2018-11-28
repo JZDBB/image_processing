@@ -63,7 +63,10 @@
     <ClInclude Include="paintHistDialog.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="FFT_transform.h">
+    <ClInclude Include="complex_mat.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FFT_transform.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -87,9 +90,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="paintHistDialog.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FFT_transform.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

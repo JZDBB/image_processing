@@ -10,12 +10,14 @@
 #include <vector>
 #include <algorithm>
 #include<cmath>
-#include "FFT_transform.h"
-using namespace std;
+#include "FFT_transform.hpp"
+//#include "complex"
+#include "complex_mat.hpp"
+
 #include "Image_ProcessingDoc.h"
 #include "paintHistDialog.h"
 #include "Image_ProcessingView.h"
-
+using namespace std;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -787,7 +789,33 @@ void CImage_ProcessingView::OnTransformfft()
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 	int w = m_Image.GetWidth();//获取高度和宽度
 	int h = m_Image.GetHeight();
-	
+	int bits = m_Image.GetBPP();
+	if (w & w - 1 != 0 || h & h - 1 != 0) return;
+	if (bits == 24 || bits == 32){
+		for (int i = 0; i < h; i++){
+			for (int j = 0; j < w; j++){
+				int ave = 0.1140 *m_Image.m_pBits[0][i][j] + 0.5870 *m_Image.m_pBits[1][i][j] + 0.2989 *m_Image.m_pBits[2][i][j];
+				m_Image.m_pBits[0][i][j] = ave;
+				m_Image.m_pBits[1][i][j] = ave;
+				m_Image.m_pBits[2][i][j] = ave;
+			}
+		}
+	}
+	//BYTE** Image = (BYTE**)new BYTE**;
+	//for (int i = 0; i < h; i++)
+	//{
+	//	Image[i] = new BYTE[w];
+	//}
+
+	complex_mat<float> a(w, h);
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			a.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+		}
+	}
+	fft2<float>(a.y, w, h);
 
 }
 
