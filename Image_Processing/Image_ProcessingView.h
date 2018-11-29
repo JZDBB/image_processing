@@ -64,7 +64,6 @@ public:
 	afx_msg void OnHistmatch();
 	afx_msg void OnMeanfilter();
 	afx_msg void OnMidfilter();
-
 	afx_msg void OnAddnoise();
 	afx_msg void OnTransformfft();
 	afx_msg void OnLowpass();
@@ -73,6 +72,9 @@ public:
 	afx_msg void OnButterhighpass();
 	afx_msg void OnGaussianlowpass();
 	afx_msg void OnGaussianhighpass();
+	afx_msg void OnAddimpulsenoise();
+	afx_msg void OnAddguaussiannoise();
+	double CImage_ProcessingView::generateGaussianNoise(double mu, double sigma);
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本
