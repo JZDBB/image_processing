@@ -11,15 +11,16 @@
 #include <algorithm>
 #include <limits>
 #include <iostream>
+#include <cmath>
 #include "FFT_transform.hpp"
 #include "complex_mat.hpp"
-
 #include "Image_ProcessingDoc.h"
 #include "paintHistDialog.h"
 #include "Image_ProcessingView.h"
 using namespace std;
 
-#define  PI 3.1415926
+//#define  PI 3.1415926
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -60,6 +61,7 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_GAUSSIANHIGHPASS, &CImage_ProcessingView::OnGaussianhighpass)
 	ON_COMMAND(ID_ADDIMPULSENOISE, &CImage_ProcessingView::OnAddimpulsenoise)
 	ON_COMMAND(ID_ADDGUAUSSIANNOISE, &CImage_ProcessingView::OnAddguaussiannoise)
+	ON_COMMAND(ID_ADAPTEDMIDFILTER, &CImage_ProcessingView::OnAdaptedmidfilter)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -805,27 +807,63 @@ void CImage_ProcessingView::OnTransformfft()
 			}
 		}
 	}
-
-	complex_mat<float> a(w, h);
+	complex_mat<float> F(w, h);
+	complex_mat<float> F_buf(w, h);
 	for (int i = 0; i < h; i++)
 	{
 		for (int j = 0; j < w; j++)
 		{
-			a.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+			F.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
 		}
 	}
-	fft2<float>(a.y, w, h);
-	//现在的a.y就是fft后的结果
+	fft2<float>(F.y, w, h);//现在的F.y就是fft后的结果
+
+	for (int i = 0; i < w; i++)
+	{
+		for (int j = 0; j < h; j++)
+		{	
+			int m = i + w / 2;
+			if (m > w-1) m = i - w / 2;
+			F_buf.y[i][j] = F.y[m][j];
+		}
+	}
 	for (int i = 0; i < h; i++)
 	{
 		for (int j = 0; j < w; j++)
 		{
-			int value = abs(a.y[i][j]);
+			int m = i + h / 2;
+			if (m > h-1) m = i - h / 2;
+			F.y[j][i] = F_buf.y[j][m];
+		}
+	}
+	
+	int max = log(1 + abs(F.y[0][0]));
+	int min = log(1 + abs(F.y[0][0]));
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = log(1 + abs(F.y[i][j]));
+			if (value > max) max = value;
+			if (value < min) min = value;
+		}
+	}
+
+	float inner = 0;
+	inner = (max - min) / 255;
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = log(1 + abs(F.y[i][j]));
+			value = float((value + min) / inner);
 			m_Image.m_pBits[0][i][j] = value;
 			m_Image.m_pBits[1][i][j] = value;
 			m_Image.m_pBits[2][i][j] = value;
 		}
 	}
+
 	Invalidate(1);
 }
 
@@ -833,6 +871,7 @@ void CImage_ProcessingView::OnTransformfft()
 void CImage_ProcessingView::OnLowpass()
 {
 	// TODO: 在此添加命令处理程序代码
+
 }
 
 
@@ -869,46 +908,73 @@ void CImage_ProcessingView::OnGaussianhighpass()
 double CImage_ProcessingView::generateGaussianNoise(double mu, double sigma)
 {
 	//定义小值  
-	//const double epsilon = std::numeric_limits<double>::min();
-	//static double z0, z1;
-	//static bool flag = false;
-	//flag = !flag;
-	////flag为假构造高斯随机变量X  
-	//if (!flag)
-	//	return z1 * sigma + mu;
-	//double u1, u2;
-	////构造随机变量  
-	//do
-	//{
-	//	u1 = rand() * (1.0 / RAND_MAX);
-	//	u2 = rand() * (1.0 / RAND_MAX);
-	//} while (u1 <= epsilon);
-	////flag为真构造高斯随机变量  
-	//z0 = sqrt(-2.0*log(u1))*cos(2 * PI*u2);
-	//z1 = sqrt(-2.0*log(u1))*sin(2 * PI*u2);
-	//return z0 * sigma + mu;
+	const double epsilon = 0.00000001;
+	static double z0, z1;
+	static bool flag = false;
+	flag = !flag;
+	//flag为假构造高斯随机变量X  
+	if (!flag)
+		return z1 * sigma + mu;
+	double u1, u2;
+	//构造随机变量  
+	do
+	{
+		u1 = rand() * (1.0 / RAND_MAX);
+		u2 = rand() * (1.0 / RAND_MAX);
+	} while (u1 <= epsilon);
+	//flag为真构造高斯随机变量
+	z0 = sqrt(-2.0*log(u1))*cos(2 * PI*u2);
+	z1 = sqrt(-2.0*log(u1))*sin(2 * PI*u2);
+	return z0 * sigma + mu;
 	return mu;
 }
 
 void CImage_ProcessingView::OnAddimpulsenoise()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (m_Image.IsNull()) //判断图像是否为空，如果对空图像进行操作会出现未知的错误
-	{
-		MessageBox(_T("请先打开一幅图像！"));
-		return;
-	}
-
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 	int w = m_Image.GetWidth();//获得第一幅图像的宽度
 	int h = m_Image.GetHeight();//获得第一幅图像的高度
+	int n = 0.2*h*w;//盐噪声概率0.1
+	for (int k = 0; k < n; k++)
+	{
+		//随机取值行列  
+		int i = rand() % w;
+		int j = rand() % h;
+		m_Image.m_pBits[0][j][i] = 255;
+		m_Image.m_pBits[1][j][i] = 255;
+		m_Image.m_pBits[2][j][i] = 255;
+	}
+	int d = 0.2*h*w;
+	for (int k = 0; k < d; k++)
+	{
+		//随机取值行列  
+		int i = rand() % w;
+		int j = rand() % h;
+		m_Image.m_pBits[0][j][i] = 0;
+		m_Image.m_pBits[1][j][i] = 0;
+		m_Image.m_pBits[2][j][i] = 0;
+	}
 
+	Invalidate(1);
+}
+
+
+void CImage_ProcessingView::OnAddguaussiannoise()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获得第一幅图像的宽度
+	int h = m_Image.GetHeight();//获得第一幅图像的高度
+	int mean = 0;
+	int var = 30;
 	for (int j = 0; j < h; j++)
 	{
 		for (int i = 0; i < w; i++)
 		{
-			int val0 = m_Image.m_pBits[0][j][i] + generateGaussianNoise(0, 1);//具体乘上多少可以考虑
-			int val1 = m_Image.m_pBits[1][j][i] + generateGaussianNoise(0, 1);//具体乘上多少可以考虑
-			int val2 = m_Image.m_pBits[2][j][i] + generateGaussianNoise(0, 1);//具体乘上多少可以考虑
+			int val0 = m_Image.m_pBits[0][j][i] + generateGaussianNoise(mean, var);
+			int val1 = m_Image.m_pBits[1][j][i] + generateGaussianNoise(mean, var);
+			int val2 = m_Image.m_pBits[2][j][i] + generateGaussianNoise(mean, var);
 
 			if (val0 < 0)
 				val0 = 0;
@@ -931,41 +997,27 @@ void CImage_ProcessingView::OnAddimpulsenoise()
 }
 
 
-void CImage_ProcessingView::OnAddguaussiannoise()
+void CImage_ProcessingView::OnAdaptedmidfilter()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (m_Image.IsNull()) //判断图像是否为空，如果对空图像进行操作会出现未知的错误
-	{
-		MessageBox(_T("请先打开一幅图像！"));
-		return;
-	}
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 	int w = m_Image.GetWidth();//获得第一幅图像的宽度
 	int h = m_Image.GetHeight();//获得第一幅图像的高度
-	int n = 0.2*h*w;//盐噪声概率0.1
 
-	for (int k = 0; k < n; k++)
+	int W_size = 10;//还需手动输入
+	int size = 5;//初始窗口大小
+	
+	MyImage_ m_Image2;
+	for (int i = 0; i < w; i++)
 	{
-		//随机取值行列  
-		int i = rand() % w;
-		int j = rand() % h;
+		for (int j = 0; j < h; j++)
+		{
+			int *arr;
+			int A1 = 0;
+			int A2 = 0;
 
-		m_Image.m_pBits[0][j][i] = 255;
-		m_Image.m_pBits[1][j][i] = 255;
-		m_Image.m_pBits[2][j][i] = 255;
-
+			
+		}
 	}
 
-	int d = 0.2*h*w;
-	for (int k = 0; k < d; k++)
-	{
-		//随机取值行列  
-		int i = rand() % w;
-		int j = rand() % h;
-
-		m_Image.m_pBits[0][j][i] = 0;
-		m_Image.m_pBits[1][j][i] = 0;
-		m_Image.m_pBits[2][j][i] = 0;
-
-	}
-	Invalidate(1);
 }

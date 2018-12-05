@@ -75,6 +75,7 @@ public:
 	afx_msg void OnAddimpulsenoise();
 	afx_msg void OnAddguaussiannoise();
 	double CImage_ProcessingView::generateGaussianNoise(double mu, double sigma);
+	afx_msg void OnAdaptedmidfilter();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本
