@@ -809,6 +809,7 @@ void CImage_ProcessingView::OnTransformfft()
 	}
 	complex_mat<float> F(w, h);
 	complex_mat<float> F_buf(w, h);
+	
 	for (int i = 0; i < h; i++)
 	{
 		for (int j = 0; j < w; j++)
@@ -837,14 +838,14 @@ void CImage_ProcessingView::OnTransformfft()
 		}
 	}
 	
-	int max = log(1 + abs(F.y[0][0]));
-	int min = log(1 + abs(F.y[0][0]));
+	float max = log(1 + abs(F.y[0][0]));
+	float min = log(1 + abs(F.y[0][0]));
 
 	for (int i = 0; i < h; i++)
 	{
 		for (int j = 0; j < w; j++)
 		{
-			int value = log(1 + abs(F.y[i][j]));
+			float value = log(1 + abs(F.y[i][j]));
 			if (value > max) max = value;
 			if (value < min) min = value;
 		}
@@ -856,11 +857,13 @@ void CImage_ProcessingView::OnTransformfft()
 	{
 		for (int j = 0; j < w; j++)
 		{
-			int value = log(1 + abs(F.y[i][j]));
+			float value = log(1 + abs(F.y[i][j]));
 			value = float((value + min) / inner);
-			m_Image.m_pBits[0][i][j] = value;
-			m_Image.m_pBits[1][i][j] = value;
-			m_Image.m_pBits[2][i][j] = value;
+			if (value > 255) value = 255;
+			if (value < 0) value = 0;
+			m_Image.m_pBits[0][i][j] = int(value);
+			m_Image.m_pBits[1][i][j] = int(value);
+			m_Image.m_pBits[2][i][j] = int(value);
 		}
 	}
 
