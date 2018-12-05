@@ -749,8 +749,6 @@ void CImage_ProcessingView::OnAddnoise()
 		//_T("请先打开一幅图像！"));
 		return;
 	}
-	//show_flag = 0;	//恢复FLAG
-
 	UpdateData();//获得编辑框用户输入的数据
 
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现错误
@@ -809,15 +807,18 @@ void CImage_ProcessingView::OnTransformfft()
 	}
 	complex_mat<float> F(w, h);
 	complex_mat<float> F_buf(w, h);
+	complex_mat<float> F_ifft(w, h);
 	
 	for (int i = 0; i < h; i++)
 	{
 		for (int j = 0; j < w; j++)
 		{
 			F.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+			F_ifft.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
 		}
 	}
 	fft2<float>(F.y, w, h);//现在的F.y就是fft后的结果
+	fft2<float>(F_ifft.y, w, h);
 
 	for (int i = 0; i < w; i++)
 	{
@@ -837,10 +838,8 @@ void CImage_ProcessingView::OnTransformfft()
 			F.y[j][i] = F_buf.y[j][m];
 		}
 	}
-	
 	float max = log(1 + abs(F.y[0][0]));
 	float min = log(1 + abs(F.y[0][0]));
-
 	for (int i = 0; i < h; i++)
 	{
 		for (int j = 0; j < w; j++)
@@ -864,6 +863,18 @@ void CImage_ProcessingView::OnTransformfft()
 			m_Image.m_pBits[0][i][j] = int(value);
 			m_Image.m_pBits[1][i][j] = int(value);
 			m_Image.m_pBits[2][i][j] = int(value);
+		}
+	}
+	
+	ifft2<float>(F_ifft.y, w, h);
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = abs(F_ifft.y[i][j]);
+			m_Image.m_pBits[0][i][j] = value;
+			m_Image.m_pBits[1][i][j] = value;
+			m_Image.m_pBits[2][i][j] = value;
 		}
 	}
 
