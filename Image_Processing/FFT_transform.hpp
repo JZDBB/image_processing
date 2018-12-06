@@ -35,9 +35,11 @@ void fft(complex<T> y[], int len) {
 	}
 }
 
-
 template <class T>
 void ifft(complex<T> y[], int len) {
+	for (int h = 0; h < len; h++) {
+		y[h] /= len;
+	}
 	change(y, len);
 	for (int h = 2; h <= len; h <<= 1) {
 		complex<T> wn(cos(1 * 2 * PI / h), sin(1 * 2 * PI / h));
@@ -52,10 +54,7 @@ void ifft(complex<T> y[], int len) {
 			}
 		}
 	}
-	int t = log2(len) * 2;
-	for (int h = 0; h < len; h++) {
-		y[h] /= t;
-	}
+	
 }
 
 template <class T>
@@ -111,7 +110,6 @@ void ifft2(complex<T> **y, int c, int r) {
 		for (int n = 0; n < c; n++) {
 			y[i][n] = row[n];
 		}
-
 	}
 
 	delete[] row;

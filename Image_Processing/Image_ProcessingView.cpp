@@ -53,6 +53,7 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_MIDFILTER, &CImage_ProcessingView::OnMidfilter)
 	ON_COMMAND(ID_ADDNOISE, &CImage_ProcessingView::OnAddnoise)
 	ON_COMMAND(ID_TRANSFORMFFT, &CImage_ProcessingView::OnTransformfft)
+	ON_COMMAND(ID_TRANSFORMIFFT, &CImage_ProcessingView::OnTransformifft)
 	ON_COMMAND(ID_LOWPASS, &CImage_ProcessingView::OnLowpass)
 	ON_COMMAND(ID_HIGHPASS, &CImage_ProcessingView::OnHighpass)
 	ON_COMMAND(ID_BUTTERLOWPASS, &CImage_ProcessingView::OnButterlowpass)
@@ -62,6 +63,7 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_ADDIMPULSENOISE, &CImage_ProcessingView::OnAddimpulsenoise)
 	ON_COMMAND(ID_ADDGUAUSSIANNOISE, &CImage_ProcessingView::OnAddguaussiannoise)
 	ON_COMMAND(ID_ADAPTEDMIDFILTER, &CImage_ProcessingView::OnAdaptedmidfilter)
+	
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -793,6 +795,8 @@ void CImage_ProcessingView::OnTransformfft()
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 	int w = m_Image.GetWidth();//获取高度和宽度
 	int h = m_Image.GetHeight();
+	width = w;
+	height = h;
 	int bits = m_Image.GetBPP();
 	if (w & w - 1 != 0 || h & h - 1 != 0) return;
 	if (bits == 24 || bits == 32){
@@ -807,18 +811,16 @@ void CImage_ProcessingView::OnTransformfft()
 	}
 	complex_mat<float> F(w, h);
 	complex_mat<float> F_buf(w, h);
-	complex_mat<float> F_ifft(w, h);
 	
 	for (int i = 0; i < h; i++)
 	{
 		for (int j = 0; j < w; j++)
 		{
 			F.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
-			F_ifft.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+			//F_ifft.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
 		}
 	}
 	fft2<float>(F.y, w, h);//现在的F.y就是fft后的结果
-	fft2<float>(F_ifft.y, w, h);
 
 	for (int i = 0; i < w; i++)
 	{
@@ -865,8 +867,39 @@ void CImage_ProcessingView::OnTransformfft()
 			m_Image.m_pBits[2][i][j] = int(value);
 		}
 	}
-	
+
+	Invalidate(1);
+}
+
+void CImage_ProcessingView::OnTransformifft()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获取高度和宽度
+	int h = m_Image.GetHeight();
+	int bits = m_Image.GetBPP();
+	if (w & w - 1 != 0 || h & h - 1 != 0) return;
+	if (bits == 24 || bits == 32) {
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				int ave = 0.1140 *m_Image.m_pBits[0][i][j] + 0.5870 *m_Image.m_pBits[1][i][j] + 0.2989 *m_Image.m_pBits[2][i][j];
+				m_Image.m_pBits[0][i][j] = ave;
+				m_Image.m_pBits[1][i][j] = ave;
+				m_Image.m_pBits[2][i][j] = ave;
+			}
+		}
+	}
+	complex_mat<float> F_ifft(w, h);
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			F_ifft.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+		}
+	}
+	fft2<float>(F_ifft.y, w, h);
 	ifft2<float>(F_ifft.y, w, h);
+
 	for (int i = 0; i < h; i++)
 	{
 		for (int j = 0; j < w; j++)
@@ -877,14 +910,14 @@ void CImage_ProcessingView::OnTransformfft()
 			m_Image.m_pBits[2][i][j] = value;
 		}
 	}
-
+	
 	Invalidate(1);
 }
-
 
 void CImage_ProcessingView::OnLowpass()
 {
 	// TODO: 在此添加命令处理程序代码
+
 
 }
 
@@ -1035,3 +1068,6 @@ void CImage_ProcessingView::OnAdaptedmidfilter()
 	}
 
 }
+
+
+

@@ -51,6 +51,7 @@ public:
 public:
 	MyImage_ m_Image;
 	CString filename;
+	int width, height;
 
 	afx_msg void OnDrawline();
 	afx_msg void OnFileSaveAs();
@@ -76,6 +77,7 @@ public:
 	afx_msg void OnAddguaussiannoise();
 	double CImage_ProcessingView::generateGaussianNoise(double mu, double sigma);
 	afx_msg void OnAdaptedmidfilter();
+	afx_msg void OnTransformifft();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本
