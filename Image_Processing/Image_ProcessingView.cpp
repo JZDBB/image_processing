@@ -99,9 +99,37 @@ void CImage_ProcessingView::OnDraw(CDC* pDC)
 	// TODO: 在此处为本机数据添加绘制代码
 	if (!m_Image.IsNull())
 	{
-		m_Image.Draw(pDC->m_hDC,0,0); 
+
+		if (m_Image.flag == 2)//显示操作后的对比
+		{
+			m_Image.Draw(pDC->m_hDC, 0, 0);
+			image2.Draw(pDC->m_hDC, m_Image.GetWidth(), 0);
+		}
+
+		else if (m_Image.flag == 1)//对比原图
+		{
+			m_Image.Draw(pDC->m_hDC, 0, 0);
+			m_Imagesrc.Draw(pDC->m_hDC, m_Image.GetWidth(), 0);
+		}
+
+		else if (m_Image.flag == 0)//只显示原图
+		{
+			m_Image.Draw(pDC->m_hDC, 0, 0);
+		}
 	}
 	return;
+	
+	//CImage_ProcessingDoc* pDoc = GetDocument();
+	//ASSERT_VALID(pDoc);
+	//if (!pDoc)
+	//	return;
+
+	//// TODO: 在此处为本机数据添加绘制代码
+	//if (!m_Image.IsNull())
+	//{
+	//	m_Image.Draw(pDC->m_hDC,0,0); 
+	//}
+	//return;
 }
 
 void CImage_ProcessingView::OnInitialUpdate()
@@ -199,8 +227,7 @@ void CImage_ProcessingView::OnFileOpen()
 
 		//Window_Image_w=m_Image.GetWidth();//获得图片的初始大小，为放大缩小功能做准备
 		//Window_Image_h=m_Image.GetHeight();//
-
-
+		m_Image.flag = 0;
 		Invalidate(1); //强制调用ONDRAW函数
 	}
 }
@@ -795,8 +822,8 @@ void CImage_ProcessingView::OnTransformfft()
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 	int w = m_Image.GetWidth();//获取高度和宽度
 	int h = m_Image.GetHeight();
-	width = w;
-	height = h;
+	if (!m_Imagesrc.IsNull()) m_Imagesrc.Destroy();
+	m_Imagesrc.Load(filename);
 	int bits = m_Image.GetBPP();
 	if (w & w - 1 != 0 || h & h - 1 != 0) return;
 	if (bits == 24 || bits == 32){
@@ -867,7 +894,7 @@ void CImage_ProcessingView::OnTransformfft()
 			m_Image.m_pBits[2][i][j] = int(value);
 		}
 	}
-
+	m_Image.flag = 1;
 	Invalidate(1);
 }
 

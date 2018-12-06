@@ -50,8 +50,10 @@ public:
 	afx_msg void OnFileOpen();
 public:
 	MyImage_ m_Image;
+	MyImage_ m_Imagesrc;
 	CString filename;
 	int width, height;
+	CImage image2;
 
 	afx_msg void OnDrawline();
 	afx_msg void OnFileSaveAs();

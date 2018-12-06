@@ -50,8 +50,11 @@ public:
 	float hist[256];
 	//int hist_equal[256];
 
-private:
+public:
 
 	CImage m_CImage;
+
+	int flag;
+
 };
 
