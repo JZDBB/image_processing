@@ -837,7 +837,6 @@ void CImage_ProcessingView::OnTransformfft()
 		}
 	}
 	complex_mat<float> F(w, h);
-	complex_mat<float> F_buf(w, h);
 	
 	for (int i = 0; i < h; i++)
 	{
@@ -848,25 +847,8 @@ void CImage_ProcessingView::OnTransformfft()
 		}
 	}
 	fft2<float>(F.y, w, h);//现在的F.y就是fft后的结果
+	fft_shift<float>(F.y, w, h);
 
-	for (int i = 0; i < w; i++)
-	{
-		for (int j = 0; j < h; j++)
-		{	
-			int m = i + w / 2;
-			if (m > w-1) m = i - w / 2;
-			F_buf.y[i][j] = F.y[m][j];
-		}
-	}
-	for (int i = 0; i < h; i++)
-	{
-		for (int j = 0; j < w; j++)
-		{
-			int m = i + h / 2;
-			if (m > h-1) m = i - h / 2;
-			F.y[j][i] = F_buf.y[j][m];
-		}
-	}
 	float max = log(1 + abs(F.y[0][0]));
 	float min = log(1 + abs(F.y[0][0]));
 	for (int i = 0; i < h; i++)
@@ -878,7 +860,6 @@ void CImage_ProcessingView::OnTransformfft()
 			if (value < min) min = value;
 		}
 	}
-
 	float inner = 0;
 	inner = (max - min) / 255;
 	for (int i = 0; i < h; i++)
@@ -944,8 +925,92 @@ void CImage_ProcessingView::OnTransformifft()
 void CImage_ProcessingView::OnLowpass()
 {
 	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获取高度和宽度
+	int h = m_Image.GetHeight();
+	if (!m_Imagesrc.IsNull()) m_Imagesrc.Destroy();
+	m_Imagesrc.Load(filename);
+	int bits = m_Image.GetBPP();
+	if (w & w - 1 != 0 || h & h - 1 != 0) return;
+	if (bits == 24 || bits == 32) {
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				int ave = 0.1140 *m_Image.m_pBits[0][i][j] + 0.5870 *m_Image.m_pBits[1][i][j] + 0.2989 *m_Image.m_pBits[2][i][j];
+				m_Image.m_pBits[0][i][j] = ave;
+				m_Image.m_pBits[1][i][j] = ave;
+				m_Image.m_pBits[2][i][j] = ave;
+			}
+		}
+	}
+	complex_mat<float> F(w, h);
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			F.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+			//F_ifft.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+		}
+	}
+	fft2<float>(F.y, w, h);//现在的F.y就是fft后的结果
+	fft_shift<float>(F.y, w, h);
 
+	float center_x, center_y;
+	center_x = float(w) / 2;
+	center_y = float(h) / 2;
+	float D0 = 10;
 
+	for (int i = 0; i < w; i++)
+	{
+		for (int j = 0; j < h; j++)
+		{
+			if ((i^2 + j^2) > D0^2)
+			{
+				F.y[i][j] = 0;
+			}
+		}
+	}
+	float max = log(1 + abs(F.y[0][0]));
+	float min = log(1 + abs(F.y[0][0]));
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float value = log(1 + abs(F.y[i][j]));
+			if (value > max) max = value;
+			if (value < min) min = value;
+		}
+	}
+	float inner = 0;
+	inner = (max - min) / 255;
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float value = log(1 + abs(F.y[i][j]));
+			value = float((value + min) / inner);
+			if (value > 255) value = 255;
+			if (value < 0) value = 0;
+			m_Image.m_pBits[0][i][j] = int(value);
+			m_Image.m_pBits[1][i][j] = int(value);
+			m_Image.m_pBits[2][i][j] = int(value);
+		}
+	}
+	fft_shift<float>(F.y, w, h);
+	ifft2<float>(F.y, w, h);
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = abs(F.y[i][j]);
+			m_Imagesrc.m_pBits[0][i][j] = value;
+			m_Imagesrc.m_pBits[1][i][j] = value;
+			m_Imagesrc.m_pBits[2][i][j] = value;
+		}
+	}
+
+	m_Image.flag = 1;
+	Invalidate(1);
 }
 
 
@@ -1095,6 +1160,3 @@ void CImage_ProcessingView::OnAdaptedmidfilter()
 	}
 
 }
-
-
-

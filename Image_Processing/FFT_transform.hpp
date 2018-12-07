@@ -116,4 +116,29 @@ void ifft2(complex<T> **y, int c, int r) {
 	delete[] col;
 
 }
+
+template <class T>
+void fft_shift(complex<T> **y, int w, int h) {
+	complex_mat<float> F_buf(w, h);
+
+	for (int i = 0; i < w; i++)
+	{
+		for (int j = 0; j < h; j++)
+		{
+			int m = i + w / 2;
+			if (m > w - 1) m = i - w / 2;
+			F_buf.y[i][j] = y[m][j];
+		}
+	}
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int m = i + h / 2;
+			if (m > h - 1) m = i - h / 2;
+			y[j][i] = F_buf.y[j][m];
+		}
+	}
+
+}
 #endif // !FFT_TRANSFORM_HPP
