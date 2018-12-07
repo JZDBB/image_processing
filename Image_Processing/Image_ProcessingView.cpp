@@ -20,7 +20,7 @@
 #include "Image_ProcessingView.h"
 using namespace std;
 
-//#define  PI 3.1415926
+#define  E 2.718281828;
 
 
 #ifdef _DEBUG
@@ -1021,30 +1021,475 @@ void CImage_ProcessingView::OnLowpass()
 void CImage_ProcessingView::OnHighpass()
 {
 	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获取高度和宽度
+	int h = m_Image.GetHeight();
+	if (!m_Imagesrc.IsNull()) m_Imagesrc.Destroy();
+	m_Imagesrc.Load(filename);
+	int bits = m_Image.GetBPP();
+	if (w & w - 1 != 0 || h & h - 1 != 0) return;
+	if (bits == 24 || bits == 32) {
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				int ave = 0.1140 *m_Image.m_pBits[0][i][j] + 0.5870 *m_Image.m_pBits[1][i][j] + 0.2989 *m_Image.m_pBits[2][i][j];
+				m_Image.m_pBits[0][i][j] = ave;
+				m_Image.m_pBits[1][i][j] = ave;
+				m_Image.m_pBits[2][i][j] = ave;
+			}
+		}
+	}
+	complex_mat<float> F(w, h);
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			F.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+			//F_ifft.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+		}
+	}
+	fft2<float>(F.y, w, h);//现在的F.y就是fft后的结果
+	fft_shift<float>(F.y, w, h);
+
+	float center_x, center_y;
+	center_x = float(w) / 2;
+	center_y = float(h) / 2;
+	float D0 = 80;
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float dis = pow(i - center_y, 2) + pow(j - center_x, 2);
+			if (dis < pow(D0, 2))
+			{
+				F.y[i][j] = 0;
+			}
+		}
+	}
+	float max = log(1 + abs(F.y[0][0]));
+	float min = log(1 + abs(F.y[0][0]));
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float value = log(1 + abs(F.y[i][j]));
+			if (value > max) max = value;
+			if (value < min) min = value;
+		}
+	}
+	float inner = 0;
+	inner = (max - min) / 255;
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float value = log(1 + abs(F.y[i][j]));
+			value = float((value + min) / inner);
+			if (value > 255) value = 255;
+			if (value < 0) value = 0;
+			m_Image.m_pBits[0][i][j] = int(value);
+			m_Image.m_pBits[1][i][j] = int(value);
+			m_Image.m_pBits[2][i][j] = int(value);
+		}
+	}
+	fft_shift<float>(F.y, w, h);
+	ifft2<float>(F.y, w, h);
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = abs(F.y[i][j]);
+			if (value > 255) value = 255;
+			if (value < 0) value = 0;
+			m_Imagesrc.m_pBits[0][i][j] = value;
+			m_Imagesrc.m_pBits[1][i][j] = value;
+			m_Imagesrc.m_pBits[2][i][j] = value;
+		}
+	}
+
+	m_Image.flag = 1;
+	Invalidate(1);
 }
 
 
 void CImage_ProcessingView::OnButterlowpass()
 {
 	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获取高度和宽度
+	int h = m_Image.GetHeight();
+	if (!m_Imagesrc.IsNull()) m_Imagesrc.Destroy();
+	m_Imagesrc.Load(filename);
+	int bits = m_Image.GetBPP();
+	if (w & w - 1 != 0 || h & h - 1 != 0) return;
+	if (bits == 24 || bits == 32) {
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				int ave = 0.1140 *m_Image.m_pBits[0][i][j] + 0.5870 *m_Image.m_pBits[1][i][j] + 0.2989 *m_Image.m_pBits[2][i][j];
+				m_Image.m_pBits[0][i][j] = ave;
+				m_Image.m_pBits[1][i][j] = ave;
+				m_Image.m_pBits[2][i][j] = ave;
+			}
+		}
+	}
+	complex_mat<float> F(w, h);
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			F.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+			//F_ifft.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+		}
+	}
+	fft2<float>(F.y, w, h);//现在的F.y就是fft后的结果
+	fft_shift<float>(F.y, w, h);
+
+	float center_x, center_y;
+	center_x = float(w) / 2;
+	center_y = float(h) / 2;
+	float D0 = 1000;
+	int order = 5;
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float dis = pow(i - center_y, 2) + pow(j - center_x, 2);
+			float H = 1 / (1 + pow(dis / D0, 2 * order));
+			F.y[i][j] = F.y[i][j] * H;
+		}
+	}
+	float max = log(1 + abs(F.y[0][0]));
+	float min = log(1 + abs(F.y[0][0]));
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float value = log(1 + abs(F.y[i][j]));
+			if (value > max) max = value;
+			if (value < min) min = value;
+		}
+	}
+	float inner = 0;
+	inner = (max - min) / 255;
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float value = log(1 + abs(F.y[i][j]));
+			value = float((value + min) / inner);
+			if (value > 255) value = 255;
+			if (value < 0) value = 0;
+			m_Image.m_pBits[0][i][j] = int(value);
+			m_Image.m_pBits[1][i][j] = int(value);
+			m_Image.m_pBits[2][i][j] = int(value);
+		}
+	}
+	fft_shift<float>(F.y, w, h);
+	ifft2<float>(F.y, w, h);
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = abs(F.y[i][j]);
+			if (value > 255) value = 255;
+			if (value < 0) value = 0;
+			m_Imagesrc.m_pBits[0][i][j] = value;
+			m_Imagesrc.m_pBits[1][i][j] = value;
+			m_Imagesrc.m_pBits[2][i][j] = value;
+		}
+	}
+
+	m_Image.flag = 1;
+	Invalidate(1);
 }
 
 
 void CImage_ProcessingView::OnButterhighpass()
 {
 	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获取高度和宽度
+	int h = m_Image.GetHeight();
+	if (!m_Imagesrc.IsNull()) m_Imagesrc.Destroy();
+	m_Imagesrc.Load(filename);
+	int bits = m_Image.GetBPP();
+	if (w & w - 1 != 0 || h & h - 1 != 0) return;
+	if (bits == 24 || bits == 32) {
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				int ave = 0.1140 *m_Image.m_pBits[0][i][j] + 0.5870 *m_Image.m_pBits[1][i][j] + 0.2989 *m_Image.m_pBits[2][i][j];
+				m_Image.m_pBits[0][i][j] = ave;
+				m_Image.m_pBits[1][i][j] = ave;
+				m_Image.m_pBits[2][i][j] = ave;
+			}
+		}
+	}
+	complex_mat<float> F(w, h);
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			F.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+			//F_ifft.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+		}
+	}
+	fft2<float>(F.y, w, h);//现在的F.y就是fft后的结果
+	fft_shift<float>(F.y, w, h);
+
+	float center_x, center_y;
+	center_x = float(w) / 2;
+	center_y = float(h) / 2;
+	float D0 = 1000;
+	int order = 5;
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float dis = pow(i - center_y, 2) + pow(j - center_x, 2);
+			float H = 1 / (1 + pow(D0 / dis, 2 * order));
+			F.y[i][j] = F.y[i][j] * H;
+		}
+	}
+	float max = log(1 + abs(F.y[0][0]));
+	float min = log(1 + abs(F.y[0][0]));
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float value = log(1 + abs(F.y[i][j]));
+			if (value > max) max = value;
+			if (value < min) min = value;
+		}
+	}
+	float inner = 0;
+	inner = (max - min) / 255;
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float value = log(1 + abs(F.y[i][j]));
+			value = float((value + min) / inner);
+			if (value > 255) value = 255;
+			if (value < 0) value = 0;
+			m_Image.m_pBits[0][i][j] = int(value);
+			m_Image.m_pBits[1][i][j] = int(value);
+			m_Image.m_pBits[2][i][j] = int(value);
+		}
+	}
+	fft_shift<float>(F.y, w, h);
+	ifft2<float>(F.y, w, h);
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = abs(F.y[i][j]);
+			if (value > 255) value = 255;
+			if (value < 0) value = 0;
+			m_Imagesrc.m_pBits[0][i][j] = value;
+			m_Imagesrc.m_pBits[1][i][j] = value;
+			m_Imagesrc.m_pBits[2][i][j] = value;
+		}
+	}
+
+	m_Image.flag = 1;
+	Invalidate(1);
 }
 
 
 void CImage_ProcessingView::OnGaussianlowpass()
 {
 	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获取高度和宽度
+	int h = m_Image.GetHeight();
+	if (!m_Imagesrc.IsNull()) m_Imagesrc.Destroy();
+	m_Imagesrc.Load(filename);
+	int bits = m_Image.GetBPP();
+	if (w & w - 1 != 0 || h & h - 1 != 0) return;
+	if (bits == 24 || bits == 32) {
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				int ave = 0.1140 *m_Image.m_pBits[0][i][j] + 0.5870 *m_Image.m_pBits[1][i][j] + 0.2989 *m_Image.m_pBits[2][i][j];
+				m_Image.m_pBits[0][i][j] = ave;
+				m_Image.m_pBits[1][i][j] = ave;
+				m_Image.m_pBits[2][i][j] = ave;
+			}
+		}
+	}
+	complex_mat<float> F(w, h);
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			F.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+			//F_ifft.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+		}
+	}
+	fft2<float>(F.y, w, h);//现在的F.y就是fft后的结果
+	fft_shift<float>(F.y, w, h);
+
+	float center_x, center_y;
+	center_x = float(w) / 2;
+	center_y = float(h) / 2;
+	float D0 = 1000;
+	int order = 5;
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float dis = pow(i - center_y, 2) + pow(j - center_x, 2);
+			float m = -pow(dis, 2) / (2 * pow(D0, 2));
+			float e = E;
+			float H = pow(e, m);
+			F.y[i][j] = F.y[i][j] * H;
+		}
+	}
+	float max = log(1 + abs(F.y[0][0]));
+	float min = log(1 + abs(F.y[0][0]));
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float value = log(1 + abs(F.y[i][j]));
+			if (value > max) max = value;
+			if (value < min) min = value;
+		}
+	}
+	float inner = 0;
+	inner = (max - min) / 255;
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float value = log(1 + abs(F.y[i][j]));
+			value = float((value + min) / inner);
+			if (value > 255) value = 255;
+			if (value < 0) value = 0;
+			m_Image.m_pBits[0][i][j] = int(value);
+			m_Image.m_pBits[1][i][j] = int(value);
+			m_Image.m_pBits[2][i][j] = int(value);
+		}
+	}
+	fft_shift<float>(F.y, w, h);
+	ifft2<float>(F.y, w, h);
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = abs(F.y[i][j]);
+			if (value > 255) value = 255;
+			if (value < 0) value = 0;
+			m_Imagesrc.m_pBits[0][i][j] = value;
+			m_Imagesrc.m_pBits[1][i][j] = value;
+			m_Imagesrc.m_pBits[2][i][j] = value;
+		}
+	}
+
+	m_Image.flag = 1;
+	Invalidate(1);
 }
 
 
 void CImage_ProcessingView::OnGaussianhighpass()
 {
 	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获取高度和宽度
+	int h = m_Image.GetHeight();
+	if (!m_Imagesrc.IsNull()) m_Imagesrc.Destroy();
+	m_Imagesrc.Load(filename);
+	int bits = m_Image.GetBPP();
+	if (w & w - 1 != 0 || h & h - 1 != 0) return;
+	if (bits == 24 || bits == 32) {
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				int ave = 0.1140 *m_Image.m_pBits[0][i][j] + 0.5870 *m_Image.m_pBits[1][i][j] + 0.2989 *m_Image.m_pBits[2][i][j];
+				m_Image.m_pBits[0][i][j] = ave;
+				m_Image.m_pBits[1][i][j] = ave;
+				m_Image.m_pBits[2][i][j] = ave;
+			}
+		}
+	}
+	complex_mat<float> F(w, h);
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			F.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+			//F_ifft.y[i][j] = complex<float>(m_Image.m_pBits[0][i][j], 0);
+		}
+	}
+	fft2<float>(F.y, w, h);//现在的F.y就是fft后的结果
+	fft_shift<float>(F.y, w, h);
+
+	float center_x, center_y;
+	center_x = float(w) / 2;
+	center_y = float(h) / 2;
+	float D0 = 1000;
+	int order = 5;
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float dis = pow(i - center_y, 2) + pow(j - center_x, 2);
+			float m = -pow(dis, 2) / (2 * pow(D0, 2));
+			float e = E;
+			float H = 1 - pow(e, m);
+			F.y[i][j] = F.y[i][j] * H;
+		}
+	}
+	float max = log(1 + abs(F.y[0][0]));
+	float min = log(1 + abs(F.y[0][0]));
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float value = log(1 + abs(F.y[i][j]));
+			if (value > max) max = value;
+			if (value < min) min = value;
+		}
+	}
+	float inner = 0;
+	inner = (max - min) / 255;
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float value = log(1 + abs(F.y[i][j]));
+			value = float((value + min) / inner);
+			if (value > 255) value = 255;
+			if (value < 0) value = 0;
+			m_Image.m_pBits[0][i][j] = int(value);
+			m_Image.m_pBits[1][i][j] = int(value);
+			m_Image.m_pBits[2][i][j] = int(value);
+		}
+	}
+	fft_shift<float>(F.y, w, h);
+	ifft2<float>(F.y, w, h);
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = abs(F.y[i][j]);
+			if (value > 255) value = 255;
+			if (value < 0) value = 0;
+			m_Imagesrc.m_pBits[0][i][j] = value;
+			m_Imagesrc.m_pBits[1][i][j] = value;
+			m_Imagesrc.m_pBits[2][i][j] = value;
+		}
+	}
+
+	m_Image.flag = 1;
+	Invalidate(1);
 }
 
 //生成高斯噪声
@@ -1146,21 +1591,80 @@ void CImage_ProcessingView::OnAdaptedmidfilter()
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 	int w = m_Image.GetWidth();//获得第一幅图像的宽度
 	int h = m_Image.GetHeight();//获得第一幅图像的高度
-
-	int W_size = 10;//还需手动输入
-	int size = 5;//初始窗口大小
-	
-	MyImage_ m_Image2;
-	for (int i = 0; i < w; i++)
-	{
-		for (int j = 0; j < h; j++)
+	m_Imagesrc.Load(filename);
+	for (int i = 0; i < h; i++){
+		for (int j = 0; j < w; j++)
 		{
-			int *arr;
-			int A1 = 0;
-			int A2 = 0;
-
-			
+			m_Imagesrc.m_pBits[0][i][j] = m_Image.m_pBits[0][i][j];
+			m_Imagesrc.m_pBits[1][i][j] = m_Image.m_pBits[0][i][j];
+			m_Imagesrc.m_pBits[2][i][j] = m_Image.m_pBits[0][i][j];
 		}
 	}
+	int W_size = 11;//还需手动输入
+	int size = 5;//初始窗口大小
+	int min, max, med, A1, A2, B1, B2;
+	int p[1024];
+	int* arr = p;
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			while(true)
+			{
+				for (int m = -size/2; m <= size / 2; m++)
+				{
+					for (int n = -size / 2; n <= size / 2; n++)
+					{
+						int value;
+						if (i + m < 0) value = 0;
+						else if (j + n < 0) value = 0;
+						else if (i + m > h - 1) value = 0;
+						else if (j + n > w - 1) value = 0;
+						else value = m_Image.m_pBits[0][i + m][j + n];
+						*arr = value;
+						arr++;
+					}
+				}
+				
+				int nums = pow(size, 2);
+				arr -= nums;
+				sort(arr, arr + nums);
+				med = arr[nums / 2 + 1];
+				min = arr[0];
+				max = arr[nums - 1];
+				A1 = med - min;
+				A2 = med - max;
+				if (A1 > 0 && A2 < 0) {
+					B1 = m_Image.m_pBits[0][i][j] - min;
+					B2 = m_Image.m_pBits[0][i][j] - max;
+					if (B1 > 0 && B2 < 0) {
+						m_Imagesrc.m_pBits[0][i][j] = m_Image.m_pBits[0][i][j];
+						m_Imagesrc.m_pBits[1][i][j] = m_Image.m_pBits[0][i][j];
+						m_Imagesrc.m_pBits[2][i][j] = m_Image.m_pBits[0][i][j];
+						break;
+					}
+					else {
+						m_Imagesrc.m_pBits[0][i][j] = med;
+						m_Imagesrc.m_pBits[1][i][j] = med;
+						m_Imagesrc.m_pBits[2][i][j] = med;
+						break;
+					}
+				}
+				else {
+					size += 2;
+					if (size > W_size) {
+						m_Imagesrc.m_pBits[0][i][j] = med;
+						m_Imagesrc.m_pBits[1][i][j] = med;
+						m_Imagesrc.m_pBits[2][i][j] = med;
+						size = 5;
+					break;
+					}
+				}
+					
+			}	
+		}
+	}
+	m_Image.flag = 1;
+	Invalidate(1);
 
 }
