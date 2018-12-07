@@ -12,6 +12,7 @@
 #include <limits>
 #include <iostream>
 #include <cmath>
+#include "math.h"
 #include "FFT_transform.hpp"
 #include "complex_mat.hpp"
 #include "Image_ProcessingDoc.h"
@@ -957,13 +958,14 @@ void CImage_ProcessingView::OnLowpass()
 	float center_x, center_y;
 	center_x = float(w) / 2;
 	center_y = float(h) / 2;
-	float D0 = 10;
+	float D0 = 100;
 
-	for (int i = 0; i < w; i++)
+	for (int i = 0; i < h; i++)
 	{
-		for (int j = 0; j < h; j++)
+		for (int j = 0; j < w; j++)
 		{
-			if ((i^2 + j^2) > D0^2)
+			float dis = pow(i - center_y, 2) + pow(j - center_x, 2);
+			if ( dis > pow(D0, 2))
 			{
 				F.y[i][j] = 0;
 			}
@@ -1003,6 +1005,8 @@ void CImage_ProcessingView::OnLowpass()
 		for (int j = 0; j < w; j++)
 		{
 			int value = abs(F.y[i][j]);
+			if (value > 255) value = 255;
+			if (value < 0) value = 0;
 			m_Imagesrc.m_pBits[0][i][j] = value;
 			m_Imagesrc.m_pBits[1][i][j] = value;
 			m_Imagesrc.m_pBits[2][i][j] = value;
