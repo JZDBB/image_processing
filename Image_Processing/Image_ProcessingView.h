@@ -52,6 +52,12 @@ public:
 	MyImage_ m_Image;
 	MyImage_ m_Imagesrc;
 	CString filename;
+	MyImage_ m_Image_r;
+	MyImage_ m_Image_g;
+	MyImage_ m_Image_b;
+	MyImage_ m_Image_h;
+	MyImage_ m_Image_s;
+	MyImage_ m_Image_i;
 	int width, height;
 	CImage image2;
 
@@ -80,6 +86,10 @@ public:
 	double CImage_ProcessingView::generateGaussianNoise(double mu, double sigma);
 	afx_msg void OnAdaptedmidfilter();
 	afx_msg void OnTransformifft();
+	afx_msg void OnShowrgb();
+	afx_msg void OnShowhsi();
+	afx_msg void OnEqualrgb();
+	afx_msg void OnEquali();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本

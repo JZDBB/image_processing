@@ -64,7 +64,10 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_ADDIMPULSENOISE, &CImage_ProcessingView::OnAddimpulsenoise)
 	ON_COMMAND(ID_ADDGUAUSSIANNOISE, &CImage_ProcessingView::OnAddguaussiannoise)
 	ON_COMMAND(ID_ADAPTEDMIDFILTER, &CImage_ProcessingView::OnAdaptedmidfilter)
-	
+	ON_COMMAND(ID_SHOWRGB, &CImage_ProcessingView::OnShowrgb)
+	ON_COMMAND(ID_SHOWHSI, &CImage_ProcessingView::OnShowhsi)
+	ON_COMMAND(ID_EQUALRGB, &CImage_ProcessingView::OnEqualrgb)
+	ON_COMMAND(ID_EQUALI, &CImage_ProcessingView::OnEquali)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -116,6 +119,18 @@ void CImage_ProcessingView::OnDraw(CDC* pDC)
 		else if (m_Image.flag == 0)//只显示原图
 		{
 			m_Image.Draw(pDC->m_hDC, 0, 0);
+		}
+		else if (m_Image.flag == 3)//对比原图
+		{
+			m_Image_r.Draw(pDC->m_hDC, 0, 0);
+			m_Image_g.Draw(pDC->m_hDC, m_Image_r.GetWidth(), 0);
+			m_Image_b.Draw(pDC->m_hDC, m_Image_r.GetWidth() + m_Image_g.GetWidth(), 0);
+		}
+		else if (m_Image.flag == 4)//对比原图
+		{
+			m_Image_h.Draw(pDC->m_hDC, 0, 0);
+			m_Image_s.Draw(pDC->m_hDC, m_Image_h.GetWidth(), 0);
+			m_Image_i.Draw(pDC->m_hDC, m_Image_h.GetWidth() + m_Image_i.GetWidth(), 0);
 		}
 	}
 	return;
@@ -1666,5 +1681,61 @@ void CImage_ProcessingView::OnAdaptedmidfilter()
 	}
 	m_Image.flag = 1;
 	Invalidate(1);
+}
 
+
+void CImage_ProcessingView::OnShowrgb()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
+	m_Image_r.Load(filename);
+	m_Image_g.Load(filename);
+	m_Image_b.Load(filename);
+	for (int j = 0; j < h; j++)
+	{
+		for (int k = 0; k < w; k++)
+		{
+			m_Image_r.m_pBits[0][j][k] = 0;//B   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
+			m_Image_r.m_pBits[1][j][k] = 0;//G
+		}
+	}
+	for (int j = 0; j < h; j++)
+	{
+		for (int k = 0; k < w; k++)
+		{
+			m_Image_g.m_pBits[0][j][k] = 0;//B   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
+			m_Image_g.m_pBits[2][j][k] = 0;//R
+		}
+	}
+	for (int j = 0; j < h; j++)
+	{
+		for (int k = 0; k < w; k++)
+		{
+			m_Image_b.m_pBits[2][j][k] = 0;//R   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
+			m_Image_b.m_pBits[1][j][k] = 0;//G
+		}
+	}
+	m_Image.flag = 3;
+	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
+
+}
+
+
+void CImage_ProcessingView::OnShowhsi()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void CImage_ProcessingView::OnEqualrgb()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+void CImage_ProcessingView::OnEquali()
+{
+	// TODO: 在此添加命令处理程序代码
 }
