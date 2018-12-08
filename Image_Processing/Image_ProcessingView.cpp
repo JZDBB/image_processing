@@ -1726,6 +1726,38 @@ void CImage_ProcessingView::OnShowrgb()
 void CImage_ProcessingView::OnShowhsi()
 {
 	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
+	m_Image_r.Load(filename);
+	m_Image_g.Load(filename);
+	m_Image_b.Load(filename);
+	for (int j = 0; j < h; j++)
+	{
+		for (int k = 0; k < w; k++)
+		{
+			m_Image_r.m_pBits[0][j][k] = 0;//B   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
+			m_Image_r.m_pBits[1][j][k] = 0;//G
+		}
+	}
+	for (int j = 0; j < h; j++)
+	{
+		for (int k = 0; k < w; k++)
+		{
+			m_Image_g.m_pBits[0][j][k] = 0;//B   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
+			m_Image_g.m_pBits[2][j][k] = 0;//R
+		}
+	}
+	for (int j = 0; j < h; j++)
+	{
+		for (int k = 0; k < w; k++)
+		{
+			m_Image_b.m_pBits[2][j][k] = 0;//R   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
+			m_Image_b.m_pBits[1][j][k] = 0;//G
+		}
+	}
+	m_Image.flag = 3;
+	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
 }
 
 
