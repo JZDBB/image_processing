@@ -1729,34 +1729,39 @@ void CImage_ProcessingView::OnShowhsi()
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 	int w = m_Image.GetWidth();//获得图像的宽度
 	int h = m_Image.GetHeight();//获得图像的高度
-	m_Image_r.Load(filename);
-	m_Image_g.Load(filename);
-	m_Image_b.Load(filename);
-	for (int j = 0; j < h; j++)
+	m_Imagesrc.Load(filename);
+	m_Image_h.Load(filename);
+	m_Image_s.Load(filename);
+	m_Image_i.Load(filename);
+	
+	float theta, S, I, inner;
+	inner = 255 / PI;
+	int min, max;
+
+	for (int i = 0; i < h; i++)
 	{
-		for (int k = 0; k < w; k++)
+		for (int j = 0; j < w; j++)
 		{
-			m_Image_r.m_pBits[0][j][k] = 0;//B   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
-			m_Image_r.m_pBits[1][j][k] = 0;//G
+			int R, G, B;
+			R = m_Imagesrc.m_pBits[2][i][j];
+			G = m_Imagesrc.m_pBits[1][i][j];
+			B = m_Imagesrc.m_pBits[0][i][j];
+			int minN = min(R, G);
+			minN = min(minN, B);
+
+			theta = 1 / 2 * (2 * R - G - B) / pow((pow((R - G), 2) + (R - B)*(G - B)), 1 / 2);
+			theta = acos(theta);
+			if (B <= G) m_Image_h.m_pBits[0][i][j] = m_Image_h.m_pBits[1][i][j] = m_Image_h.m_pBits[2][i][j] = int(theta * inner);
+			else m_Image_h.m_pBits[0][i][j] = m_Image_h.m_pBits[1][i][j] = m_Image_h.m_pBits[2][i][j] = int((360 - theta) * inner);
+
+			S = (1 - 3.0 / (R + G + B)*minN) * 255;
+			m_Image_s.m_pBits[0][i][j] = m_Image_s.m_pBits[1][i][j] = m_Image_s.m_pBits[2][i][j] = S;
+
+			I = float(R + G + B) / 3;
+			m_Image_i.m_pBits[0][i][j] = m_Image_i.m_pBits[1][i][j] = m_Image_i.m_pBits[2][i][j] = I;
 		}
 	}
-	for (int j = 0; j < h; j++)
-	{
-		for (int k = 0; k < w; k++)
-		{
-			m_Image_g.m_pBits[0][j][k] = 0;//B   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
-			m_Image_g.m_pBits[2][j][k] = 0;//R
-		}
-	}
-	for (int j = 0; j < h; j++)
-	{
-		for (int k = 0; k < w; k++)
-		{
-			m_Image_b.m_pBits[2][j][k] = 0;//R   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
-			m_Image_b.m_pBits[1][j][k] = 0;//G
-		}
-	}
-	m_Image.flag = 3;
+	m_Image.flag = 4;
 	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
 }
 
