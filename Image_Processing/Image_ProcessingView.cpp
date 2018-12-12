@@ -1450,10 +1450,8 @@ void CImage_ProcessingView::OnGaussianhighpass()
 	float D0 = 1000;
 	int order = 5;
 
-	for (int i = 0; i < h; i++)
-	{
-		for (int j = 0; j < w; j++)
-		{
+	for (int i = 0; i < h; i++){
+		for (int j = 0; j < w; j++){
 			float dis = pow(i - center_y, 2) + pow(j - center_x, 2);
 			float m = -pow(dis, 2) / (2 * pow(D0, 2));
 			float e = E;
@@ -1510,17 +1508,14 @@ void CImage_ProcessingView::OnGaussianhighpass()
 //生成高斯噪声
 double CImage_ProcessingView::generateGaussianNoise(double mu, double sigma)
 {
-	//定义小值  
-	const double epsilon = 0.00000001;
+	const double epsilon = 0.00000001;//定义小值  
 	static double z0, z1;
 	static bool flag = false;
 	flag = !flag;
-	//flag为假构造高斯随机变量X  
-	if (!flag)
+	if (!flag)//flag为假构造高斯随机变量X  
 		return z1 * sigma + mu;
-	double u1, u2;
-	//构造随机变量  
-	do
+	double u1, u2;  
+	do//构造随机变量
 	{
 		u1 = rand() * (1.0 / RAND_MAX);
 		u2 = rand() * (1.0 / RAND_MAX);
@@ -1699,20 +1694,10 @@ void CImage_ProcessingView::OnShowrgb()
 		{
 			m_Image_r.m_pBits[0][j][k] = 0;//B   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
 			m_Image_r.m_pBits[1][j][k] = 0;//G
-		}
-	}
-	for (int j = 0; j < h; j++)
-	{
-		for (int k = 0; k < w; k++)
-		{
+
 			m_Image_g.m_pBits[0][j][k] = 0;//B   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
 			m_Image_g.m_pBits[2][j][k] = 0;//R
-		}
-	}
-	for (int j = 0; j < h; j++)
-	{
-		for (int k = 0; k < w; k++)
-		{
+
 			m_Image_b.m_pBits[2][j][k] = 0;//R   用循环访问图像的像素值，将它的绿色分量和蓝色分量置为0，图像就只剩下红色分量了
 			m_Image_b.m_pBits[1][j][k] = 0;//G
 		}
