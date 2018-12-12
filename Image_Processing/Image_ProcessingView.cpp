@@ -17,6 +17,7 @@
 #include "complex_mat.hpp"
 #include "Image_ProcessingDoc.h"
 #include "paintHistDialog.h"
+#include "WindowSizeDialog.h"
 #include "Image_ProcessingView.h"
 using namespace std;
 
@@ -1610,72 +1611,76 @@ void CImage_ProcessingView::OnAdaptedmidfilter()
 			m_Imagesrc.m_pBits[2][i][j] = m_Image.m_pBits[0][i][j];
 		}
 	}
-	int W_size = 11;//还需手动输入
-	int size = 5;//初始窗口大小
-	int min, max, med, A1, A2, B1, B2;
-	int p[1024];
-	int* arr = p;
-	for (int i = 0; i < h; i++)
-	{
-		for (int j = 0; j < w; j++)
+
+	WindowSizeDialog dlg(this);
+	if (IDOK == dlg.DoModal()){
+		int W_size = _ttoi(dlg.str);
+		int size = 5;//初始窗口大小
+		int min, max, med, A1, A2, B1, B2;
+		int p[1024];
+		int* arr = p;
+		for (int i = 0; i < h; i++)
 		{
-			while(true)
+			for (int j = 0; j < w; j++)
 			{
-				for (int m = -size/2; m <= size / 2; m++)
+				while (true)
 				{
-					for (int n = -size / 2; n <= size / 2; n++)
+					for (int m = -size / 2; m <= size / 2; m++)
 					{
-						int value;
-						if (i + m < 0) value = 0;
-						else if (j + n < 0) value = 0;
-						else if (i + m > h - 1) value = 0;
-						else if (j + n > w - 1) value = 0;
-						else value = m_Image.m_pBits[0][i + m][j + n];
-						*arr = value;
-						arr++;
+						for (int n = -size / 2; n <= size / 2; n++)
+						{
+							int value;
+							if (i + m < 0) value = 0;
+							else if (j + n < 0) value = 0;
+							else if (i + m > h - 1) value = 0;
+							else if (j + n > w - 1) value = 0;
+							else value = m_Image.m_pBits[0][i + m][j + n];
+							*arr = value;
+							arr++;
+						}
 					}
-				}
-				
-				int nums = pow(size, 2);
-				arr -= nums;
-				sort(arr, arr + nums);
-				med = arr[nums / 2 + 1];
-				min = arr[0];
-				max = arr[nums - 1];
-				A1 = med - min;
-				A2 = med - max;
-				if (A1 > 0 && A2 < 0) {
-					B1 = m_Image.m_pBits[0][i][j] - min;
-					B2 = m_Image.m_pBits[0][i][j] - max;
-					if (B1 > 0 && B2 < 0) {
-						m_Imagesrc.m_pBits[0][i][j] = m_Image.m_pBits[0][i][j];
-						m_Imagesrc.m_pBits[1][i][j] = m_Image.m_pBits[0][i][j];
-						m_Imagesrc.m_pBits[2][i][j] = m_Image.m_pBits[0][i][j];
-						break;
+
+					int nums = pow(size, 2);
+					arr -= nums;
+					sort(arr, arr + nums);
+					med = arr[nums / 2 + 1];
+					min = arr[0];
+					max = arr[nums - 1];
+					A1 = med - min;
+					A2 = med - max;
+					if (A1 > 0 && A2 < 0) {
+						B1 = m_Image.m_pBits[0][i][j] - min;
+						B2 = m_Image.m_pBits[0][i][j] - max;
+						if (B1 > 0 && B2 < 0) {
+							m_Imagesrc.m_pBits[0][i][j] = m_Image.m_pBits[0][i][j];
+							m_Imagesrc.m_pBits[1][i][j] = m_Image.m_pBits[0][i][j];
+							m_Imagesrc.m_pBits[2][i][j] = m_Image.m_pBits[0][i][j];
+							break;
+						}
+						else {
+							m_Imagesrc.m_pBits[0][i][j] = med;
+							m_Imagesrc.m_pBits[1][i][j] = med;
+							m_Imagesrc.m_pBits[2][i][j] = med;
+							break;
+						}
 					}
 					else {
-						m_Imagesrc.m_pBits[0][i][j] = med;
-						m_Imagesrc.m_pBits[1][i][j] = med;
-						m_Imagesrc.m_pBits[2][i][j] = med;
-						break;
+						size += 2;
+						if (size > W_size) {
+							m_Imagesrc.m_pBits[0][i][j] = med;
+							m_Imagesrc.m_pBits[1][i][j] = med;
+							m_Imagesrc.m_pBits[2][i][j] = med;
+							size = 5;
+							break;
+						}
 					}
+
 				}
-				else {
-					size += 2;
-					if (size > W_size) {
-						m_Imagesrc.m_pBits[0][i][j] = med;
-						m_Imagesrc.m_pBits[1][i][j] = med;
-						m_Imagesrc.m_pBits[2][i][j] = med;
-						size = 5;
-					break;
-					}
-				}
-					
-			}	
+			}
 		}
+		m_Image.flag = 1;
+		Invalidate(1);
 	}
-	m_Image.flag = 1;
-	Invalidate(1);
 }
 
 
