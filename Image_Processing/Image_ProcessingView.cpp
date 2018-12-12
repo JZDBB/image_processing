@@ -574,7 +574,7 @@ void CImage_ProcessingView::OnHistequal()
 	{
 		for (int j = 0; j <= i; j++)
 		{
-			s[i] += 255 * m_Image.hist[j];
+			s[i] += 255 * m_Image.hist_0[j];
 		}
 		hist_equal[i] = floor(s[i]);
 	}
@@ -1765,14 +1765,146 @@ void CImage_ProcessingView::OnShowhsi()
 	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
 }
 
-
 void CImage_ProcessingView::OnEqualrgb()
 {
 	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
+	m_Imagesrc.Load(filename);
+	
+	m_Image.calcHistogram();
+
+	float s[256] = { 0 };//均衡
+	int hist_equal[256] = { 0 };//均衡后
+
+	for (int i = 0; i < 256; i++)
+	{
+		for (int j = 0; j <= i; j++)
+		{
+			s[i] += 255 * m_Image.hist_0[j];
+		}
+		hist_equal[i] = floor(s[i]);
+	}
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = m_Image.m_pBits[0][i][j];
+			int new_value = hist_equal[value];
+			m_Image.m_pBits[0][i][j] = new_value;
+		}
+	}
+	for (int i = 0; i < 256; i++)
+	{
+		for (int j = 0; j <= i; j++)
+		{
+			s[i] += 255 * m_Image.hist_1[j];
+		}
+		hist_equal[i] = floor(s[i]);
+	}
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = m_Image.m_pBits[1][i][j];
+			int new_value = hist_equal[value];
+			m_Image.m_pBits[1][i][j] = new_value;
+		}
+	}
+	for (int i = 0; i < 256; i++)
+	{
+		for (int j = 0; j <= i; j++)
+		{
+			s[i] += 255 * m_Image.hist_2[j];
+		}
+		hist_equal[i] = floor(s[i]);
+	}
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = m_Image.m_pBits[2][i][j];
+			int new_value = hist_equal[value];
+			m_Image.m_pBits[2][i][j] = new_value;
+		}
+	}
+
+	m_Image.flag = 1;
+	Invalidate(1);
+
 }
 
 
 void CImage_ProcessingView::OnEquali()
 {
 	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
+	m_Imagesrc.Load(filename);
+
+	m_Image.calcHistogram();
+
+	float s[256] = { 0 };//均衡
+	int hist_equal[256] = { 0 };//均衡后
+
+	for (int i = 0; i < 256; i++)
+	{
+		for (int j = 0; j <= i; j++)
+		{
+			s[i] += 255 * m_Image.hist_0[j];
+		}
+		hist_equal[i] = floor(s[i]);
+	}
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = m_Image.m_pBits[0][i][j];
+			int new_value = hist_equal[value];
+			m_Image.m_pBits[0][i][j] = new_value;
+		}
+	}
+	for (int i = 0; i < 256; i++)
+	{
+		for (int j = 0; j <= i; j++)
+		{
+			s[i] += 255 * m_Image.hist_1[j];
+		}
+		hist_equal[i] = floor(s[i]);
+	}
+
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = m_Image.m_pBits[1][i][j];
+			int new_value = hist_equal[value];
+			m_Image.m_pBits[1][i][j] = new_value;
+		}
+	}
+	for (int i = 0; i < 256; i++)
+	{
+		for (int j = 0; j <= i; j++)
+		{
+			s[i] += 255 * m_Image.hist_2[j];
+		}
+		hist_equal[i] = floor(s[i]);
+	}
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int value = m_Image.m_pBits[2][i][j];
+			int new_value = hist_equal[value];
+			m_Image.m_pBits[2][i][j] = new_value;
+		}
+	}
+
+	m_Image.flag = 1;
+	Invalidate(1);
 }

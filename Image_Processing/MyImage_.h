@@ -47,7 +47,9 @@ public:
 
 
 	BYTE*** m_pBits;//三维数组，用于保存图像的BGR像素值
-	float hist[256];
+	float hist_0[256];
+	float hist_1[256];
+	float hist_2[256];
 	//int hist_equal[256];
 
 public:
