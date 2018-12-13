@@ -1534,7 +1534,7 @@ void CImage_ProcessingView::OnAddimpulsenoise()
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 	int w = m_Image.GetWidth();//获得第一幅图像的宽度
 	int h = m_Image.GetHeight();//获得第一幅图像的高度
-	int n = 0.2*h*w;//盐噪声概率0.1
+	int n = 0.1*h*w;//盐噪声概率0.1
 	for (int k = 0; k < n; k++)
 	{
 		//随机取值行列  
@@ -1544,7 +1544,7 @@ void CImage_ProcessingView::OnAddimpulsenoise()
 		m_Image.m_pBits[1][j][i] = 255;
 		m_Image.m_pBits[2][j][i] = 255;
 	}
-	int d = 0.2*h*w;
+	int d = 0.1*h*w;
 	for (int k = 0; k < d; k++)
 	{
 		//随机取值行列  
@@ -1619,16 +1619,11 @@ void CImage_ProcessingView::OnAdaptedmidfilter()
 		int min, max, med, A1, A2, B1, B2;
 		int p[1024];
 		int* arr = p;
-		for (int i = 0; i < h; i++)
-		{
-			for (int j = 0; j < w; j++)
-			{
-				while (true)
-				{
-					for (int m = -size / 2; m <= size / 2; m++)
-					{
-						for (int n = -size / 2; n <= size / 2; n++)
-						{
+		for (int i = 0; i < h; i++){
+			for (int j = 0; j < w; j++){
+				while (true){
+					for (int m = -size / 2; m <= size / 2; m++){
+						for (int n = -size / 2; n <= size / 2; n++){
 							int value;
 							if (i + m < 0) value = 0;
 							else if (j + n < 0) value = 0;
@@ -1639,7 +1634,6 @@ void CImage_ProcessingView::OnAdaptedmidfilter()
 							arr++;
 						}
 					}
-
 					int nums = pow(size, 2);
 					arr -= nums;
 					sort(arr, arr + nums);
@@ -1674,7 +1668,6 @@ void CImage_ProcessingView::OnAdaptedmidfilter()
 							break;
 						}
 					}
-
 				}
 			}
 		}
