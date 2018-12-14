@@ -69,6 +69,7 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_SHOWHSI, &CImage_ProcessingView::OnShowhsi)
 	ON_COMMAND(ID_EQUALRGB, &CImage_ProcessingView::OnEqualrgb)
 	ON_COMMAND(ID_EQUALI, &CImage_ProcessingView::OnEquali)
+	ON_COMMAND(ID_COLORSEGMENT, &CImage_ProcessingView::OnColorsegment)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -1717,11 +1718,10 @@ void CImage_ProcessingView::OnShowhsi()
 	m_Image_s.Load(filename);
 	m_Image_i.Load(filename);
 	
-	float theta, S, I;
-	for (int i = 0; i < h; i++)
-	{
-		for (int j = 0; j < w; j++)
-		{
+	float theta, H, S, I;
+
+	for (int i = 0; i < h; i++){
+		for (int j = 0; j < w; j++){
 			int R, G, B;
 			R = m_Imagesrc.m_pBits[2][i][j];
 			G = m_Imagesrc.m_pBits[1][i][j];
@@ -1729,10 +1729,14 @@ void CImage_ProcessingView::OnShowhsi()
 			int minN = min(R, G);
 			minN = min(minN, B);
 
-			theta = 1 / 2 * (2 * R - G - B) / pow((pow((R - G), 2) + (R - B)*(G - B)), 1 / 2);
+			float divide = pow((R - G), 2) + (R - B)*(G - B);
+			divide = sqrt(divide);
+			theta = 1.0 / 2 * (2 * R - G - B) / divide;
 			theta = acos(theta) / PI * 180;
-			if (B <= G) m_Image_h.m_pBits[0][i][j] = m_Image_h.m_pBits[1][i][j] = m_Image_h.m_pBits[2][i][j] = int(theta);
-			else m_Image_h.m_pBits[0][i][j] = m_Image_h.m_pBits[1][i][j] = m_Image_h.m_pBits[2][i][j] = int(360 - theta);
+			if (B <= G) H = int(theta);
+			else  H = 360 - theta;
+			H = H * 255 / 360;
+			m_Image_h.m_pBits[0][i][j] = m_Image_h.m_pBits[1][i][j] = m_Image_h.m_pBits[2][i][j] = H;
 
 			S = (1 - 3.0 / (R + G + B)*minN) * 255;
 			m_Image_s.m_pBits[0][i][j] = m_Image_s.m_pBits[1][i][j] = m_Image_s.m_pBits[2][i][j] = S;
@@ -1741,34 +1745,6 @@ void CImage_ProcessingView::OnShowhsi()
 			m_Image_i.m_pBits[0][i][j] = m_Image_i.m_pBits[1][i][j] = m_Image_i.m_pBits[2][i][j] = I;
 		}
 	}
-
-	float max = m_Image_h.m_pBits[0][0][0];
-	float min = m_Image_h.m_pBits[0][0][0];
-	for (int i = 0; i < h; i++)
-	{
-		for (int j = 0; j < w; j++)
-		{
-			float value = m_Image_h.m_pBits[0][i][j];
-			if (value > max) max = value;
-			if (value < min) min = value;
-		}
-	}
-	float inner = 0;
-	inner = (max - min) / 255;
-	for (int i = 0; i < h; i++)
-	{
-		for (int j = 0; j < w; j++)
-		{
-			float value = m_Image_h.m_pBits[0][i][j];
-			value = float((value + min) / inner);
-			if (value > 255) value = 255;
-			if (value < 0) value = 0;
-			m_Image_h.m_pBits[0][i][j] = int(value);
-			m_Image_h.m_pBits[1][i][j] = int(value);
-			m_Image_h.m_pBits[2][i][j] = int(value);
-		}
-	}
-
 	m_Image.flag = 4;
 	Invalidate(1); //强制调用ONDRAW函数，ONDRAW会绘制图像
 }
@@ -1814,14 +1790,103 @@ void CImage_ProcessingView::OnEqualrgb()
 void CImage_ProcessingView::OnEquali()
 {
 	// TODO: 在此添加命令处理程序代码
-	// TODO: 在此添加命令处理程序代码
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 	int w = m_Image.GetWidth();//获得图像的宽度
 	int h = m_Image.GetHeight();//获得图像的高度
 	m_Imagesrc.Load(filename);
+	m_Image_h.Load(filename);
+	m_Image_s.Load(filename);
+	m_Image_i.Load(filename);
 
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			float theta, H, S, I;
+			int R, G, B;
+			R = m_Imagesrc.m_pBits[2][i][j];
+			G = m_Imagesrc.m_pBits[1][i][j];
+			B = m_Imagesrc.m_pBits[0][i][j];
+			int minN = min(R, G);
+			minN = min(minN, B);
 
+			float divide = pow((R - G), 2) + (R - B)*(G - B);
+			divide = sqrt(divide);
+			theta = 1.0 / 2 * (2 * R - G - B) / divide;
+			theta = acos(theta) / PI * 180;
+			if (B <= G) H = int(theta);
+			else H = int(360 - theta);
+			H = H * 255 / 360;
+			m_Image_h.m_pBits[0][i][j] = m_Image_h.m_pBits[1][i][j] = m_Image_h.m_pBits[2][i][j] = H;
+
+			S = (1 - 3.0 / (R + G + B)*minN) * 255;
+			m_Image_s.m_pBits[0][i][j] = m_Image_s.m_pBits[1][i][j] = m_Image_s.m_pBits[2][i][j] = S;
+
+			I = float(R + G + B) / 3;
+			m_Image_i.m_pBits[0][i][j] = m_Image_i.m_pBits[1][i][j] = m_Image_i.m_pBits[2][i][j] = I;
+		}
+	}
+	m_Image_i.calcHistogram();
+
+	float s[256] = { 0 };//均衡
+	int hist_equal[256] = { 0 };//均衡后 RGB分量
+
+	for (int i = 0; i < 256; i++) {
+		for (int j = 0; j <= i; j++) {
+			s[i] += 255 * m_Image_i.hist[0][j];
+		}
+		hist_equal[i] = floor(s[i]);
+	}
+	int value, new_value;
+	for (int i = 0; i < h; i++) {
+		for (int j = 0; j < w; j++) {
+			value = m_Image_i.m_pBits[0][i][j];
+			new_value = hist_equal[value];
+			m_Image_i.m_pBits[0][i][j] = new_value;
+			m_Image_i.m_pBits[1][i][j] = new_value;
+			m_Image_i.m_pBits[2][i][j] = new_value;
+		}
+	}
+	for (int i = 0; i < h; i++){
+		for (int j = 0; j < w; j++){
+			float H, S, I, R, G, B;
+			H = m_Image_h.m_pBits[0][i][j] * 360.0 / 255.0;
+			S = m_Image_s.m_pBits[0][i][j] / 255.0;
+			I = m_Image_i.m_pBits[0][i][j];
+
+			if (H >= 0 && H < 120) {
+				B = I * (1.0 - S);
+				H = H * PI / 180;
+				R = I * (1.0 + S * cos(H) / cos(PI / 3 - H));
+				G = 3 * I - (R + B);
+			}
+			else if (H >= 120 && H < 240){
+				H = H - 120;
+				R = I * (1.0 - S);
+				H = H * PI / 180;
+				G = I * (1.0 + S * cos(H) / cos(PI / 3 - H));
+				B = 3 * I - (R + G);
+			}
+			else{
+				H = H - 240;
+				G = I * (1.0 - S);
+				H = H * PI / 180;
+				B = I * (1.0 + S * cos(H) / cos(PI / 3 - H));
+				R = 3 * I - (G + B);
+			}
+			
+			m_Image.m_pBits[0][i][j] = B > 255 ? 255 : B < 0 ? 0 : B;
+			m_Image.m_pBits[1][i][j] = G > 255 ? 255 : G < 0 ? 0 : G;
+			m_Image.m_pBits[2][i][j] = R > 255 ? 255 : R < 0 ? 0 : R;
+		}
+	}
 	
 	m_Image.flag = 1;
 	Invalidate(1);
+}
+
+
+void CImage_ProcessingView::OnColorsegment()
+{
+	// TODO: 在此添加命令处理程序代码
 }

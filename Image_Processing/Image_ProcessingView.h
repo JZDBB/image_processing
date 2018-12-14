@@ -90,6 +90,7 @@ public:
 	afx_msg void OnShowhsi();
 	afx_msg void OnEqualrgb();
 	afx_msg void OnEquali();
+	afx_msg void OnColorsegment();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本
