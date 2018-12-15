@@ -59,7 +59,17 @@ public:
 	MyImage_ m_Image_s;
 	MyImage_ m_Image_i;
 	int width, height;
+	// 记录鼠标x坐标
+	int MouseX;
+	// 记录鼠标Y坐标
+	int MouseY;
+	// 鼠标按下FLAG
+	int MouseFlag;
 	CImage image2;
+	// 保存框框第二个点
+	int MouseX2;
+	// 保存框框第二个点
+	int MouseY2;
 
 	afx_msg void OnDrawline();
 	afx_msg void OnFileSaveAs();

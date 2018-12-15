@@ -18,6 +18,7 @@
 #include "Image_ProcessingDoc.h"
 #include "paintHistDialog.h"
 #include "WindowSizeDialog.h"
+#include "PictureDialog.h"
 #include "Image_ProcessingView.h"
 using namespace std;
 
@@ -103,6 +104,7 @@ void CImage_ProcessingView::OnDraw(CDC* pDC)
 		return;
 
 	// TODO: 在此处为本机数据添加绘制代码
+	CRect   rect1;
 	if (!m_Image.IsNull())
 	{
 
@@ -134,6 +136,36 @@ void CImage_ProcessingView::OnDraw(CDC* pDC)
 			m_Image_s.Draw(pDC->m_hDC, m_Image_h.GetWidth(), 0);
 			m_Image_i.Draw(pDC->m_hDC, m_Image_h.GetWidth() + m_Image_i.GetWidth(), 0);
 		}
+		//else if(m_Image.flag == 5)
+		//{
+		//	if (m_Image.GetWidth() > rect1.right)///////
+		//	{
+		//		rect1.right = m_Image.GetWidth();
+		//	}
+		//	if (m_Image.GetHeight() > rect1.bottom)
+		//	{
+		//		rect1.bottom = m_Image.GetHeight();////如果图片比客户区大，扩大背景区域
+		//	}
+		//	pDC->FillSolidRect(rect1, RGB(169, 169, 169)); //重新设置背景颜色
+		//	m_Image.Draw(pDC->m_hDC, m_Image.X, m_Image.Y);//xy显示
+		//	CBrush *pBrush = CBrush::FromHandle((HBRUSH)GetStockObject(NULL_BRUSH));
+		//	CBrush *pOldBrush = pDC->SelectObject(pBrush);
+		//	pDC->Rectangle(CRect(CPoint(MouseX, MouseY), CPoint(MouseX2, MouseY2)));
+		//	pDC->SelectObject(pOldBrush);
+		//}
+		//if (m_Image.flag == 6)//FLAG为0
+		//{
+		//	if (m_Image.GetWidth() > rect1.right)///////
+		//	{
+		//		rect1.right = m_Image.GetWidth();
+		//	}
+		//	if (m_Image.GetHeight() > rect1.bottom)
+		//	{
+		//		rect1.bottom = m_Image.GetHeight();////如果图片比客户区大，扩大背景区域
+		//	}
+		//	pDC->FillSolidRect(rect1, RGB(128, 128, 128)); //重新设置背景颜色
+		//	m_Image.Draw(pDC->m_hDC, m_Image.X, m_Image.Y);//xy显示
+		//}
 	}
 	return;
 	
@@ -1889,4 +1921,12 @@ void CImage_ProcessingView::OnEquali()
 void CImage_ProcessingView::OnColorsegment()
 {
 	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获得图像的宽度
+	int h = m_Image.GetHeight();//获得图像的高度
+
+	PictureDialog dlg(this);
+	if (IDOK == dlg.DoModal()) {
+
+	}
 }

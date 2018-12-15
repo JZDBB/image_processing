@@ -56,5 +56,10 @@ public:
 
 	int flag;
 
+	// 显示的中心位置坐标x
+	int X;
+	// 显示的中心位置坐标Y
+	int Y;
+
 };
 
