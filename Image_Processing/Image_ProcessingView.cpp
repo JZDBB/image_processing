@@ -1924,9 +1924,39 @@ void CImage_ProcessingView::OnColorsegment()
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 	int w = m_Image.GetWidth();//获得图像的宽度
 	int h = m_Image.GetHeight();//获得图像的高度
+	m_Imagesrc.Load(filename);
 
 	PictureDialog dlg(this);
 	if (IDOK == dlg.DoModal()) {
-
+		CPoint start, end;
+		start = dlg.m_startPoint;
+		end = dlg.m_endPoint;
+		
+		for (int i = 0; i < w; i++)
+		{
+			for (int j = 0; j < h; j++)
+			{
+				if (i == start.y || i == end.y) {
+					if (j > start.x && j <= end.x){
+						m_Image.m_pBits[0][i][j] = 0;
+						m_Image.m_pBits[1][i][j] = 0;
+						m_Image.m_pBits[2][i][j] = 0;
+					}
+				}
+				if (j == start.x || j == end.x) {
+					if (i > start.y && i <= end.y) {
+						m_Image.m_pBits[0][i][j] = 0;
+						m_Image.m_pBits[1][i][j] = 0;
+						m_Image.m_pBits[2][i][j] = 0;
+					}
+				}
+			}
+		}
 	}
+
+
+
+
+	m_Image.flag = 1;
+	Invalidate(1);
 }
