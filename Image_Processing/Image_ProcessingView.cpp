@@ -71,6 +71,7 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_EQUALRGB, &CImage_ProcessingView::OnEqualrgb)
 	ON_COMMAND(ID_EQUALI, &CImage_ProcessingView::OnEquali)
 	ON_COMMAND(ID_COLORSEGMENT, &CImage_ProcessingView::OnColorsegment)
+	ON_COMMAND(ID_HOUGH, &CImage_ProcessingView::OnHough)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -108,18 +109,11 @@ void CImage_ProcessingView::OnDraw(CDC* pDC)
 	if (!m_Image.IsNull())
 	{
 
-		if (m_Image.flag == 2)//显示操作后的对比
-		{
-			m_Image.Draw(pDC->m_hDC, 0, 0);
-			image2.Draw(pDC->m_hDC, m_Image.GetWidth(), 0);
-		}
-
-		else if (m_Image.flag == 1)//对比原图
+		if (m_Image.flag == 1)//对比原图
 		{
 			m_Image.Draw(pDC->m_hDC, 0, 0);
 			m_Imagesrc.Draw(pDC->m_hDC, m_Image.GetWidth(), 0);
 		}
-
 		else if (m_Image.flag == 0)//只显示原图
 		{
 			m_Image.Draw(pDC->m_hDC, 0, 0);
@@ -1539,7 +1533,6 @@ void CImage_ProcessingView::OnGaussianhighpass()
 	Invalidate(1);
 }
 
-//生成高斯噪声
 double CImage_ProcessingView::generateGaussianNoise(double mu, double sigma)
 {
 	const double epsilon = 0.00000001;//定义小值  
@@ -1567,7 +1560,7 @@ void CImage_ProcessingView::OnAddimpulsenoise()
 	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
 	int w = m_Image.GetWidth();//获得第一幅图像的宽度
 	int h = m_Image.GetHeight();//获得第一幅图像的高度
-	int n = 0.1*h*w;//盐噪声概率0.1
+	int n = 0.05*h*w;//盐噪声概率0.1
 	for (int k = 0; k < n; k++)
 	{
 		//随机取值行列  
@@ -1577,7 +1570,7 @@ void CImage_ProcessingView::OnAddimpulsenoise()
 		m_Image.m_pBits[1][j][i] = 255;
 		m_Image.m_pBits[2][j][i] = 255;
 	}
-	int d = 0.1*h*w;
+	int d = 0.05*h*w;
 	for (int k = 0; k < d; k++)
 	{
 		//随机取值行列  
@@ -1608,21 +1601,10 @@ void CImage_ProcessingView::OnAddguaussiannoise()
 			int val1 = m_Image.m_pBits[1][j][i] + generateGaussianNoise(mean, var);
 			int val2 = m_Image.m_pBits[2][j][i] + generateGaussianNoise(mean, var);
 
-			if (val0 < 0)
-				val0 = 0;
-			if (val0 > 255)
-				val0 = 255;
-			if (val1 < 0)
-				val1 = 0;
-			if (val1 > 255)
-				val1 = 255;
-			if (val2 < 0)
-				val2 = 0;
-			if (val2 > 255)
-				val2 = 255;
-			m_Image.m_pBits[0][j][i] = val0;
-			m_Image.m_pBits[1][j][i] = val1;
-			m_Image.m_pBits[2][j][i] = val2;
+			m_Image.m_pBits[0][j][i] = val0 > 255 ? 255 : val0 < 0 ? 0 : val0;
+			m_Image.m_pBits[1][j][i] = val1 > 255 ? 255 : val1 < 0 ? 0 : val1;
+			m_Image.m_pBits[2][j][i] = val2 > 255 ? 255 : val2 < 0 ? 0 : val2;
+
 		}
 	}
 	Invalidate(1);
@@ -1648,7 +1630,7 @@ void CImage_ProcessingView::OnAdaptedmidfilter()
 	WindowSizeDialog dlg(this);
 	if (IDOK == dlg.DoModal()){
 		int W_size = _ttoi(dlg.str);
-		int size = 5;//初始窗口大小
+		int size = 3;//初始窗口大小
 		int min, max, med, A1, A2, B1, B2;
 		int p[1024];
 		int* arr = p;
@@ -1676,12 +1658,13 @@ void CImage_ProcessingView::OnAdaptedmidfilter()
 					A1 = med - min;
 					A2 = med - max;
 					if (A1 > 0 && A2 < 0) {
-						B1 = m_Image.m_pBits[0][i][j] - min;
-						B2 = m_Image.m_pBits[0][i][j] - max;
+						int Zxy = m_Image.m_pBits[0][i][j];
+						B1 = Zxy - min;
+						B2 = Zxy - max;
 						if (B1 > 0 && B2 < 0) {
-							m_Imagesrc.m_pBits[0][i][j] = m_Image.m_pBits[0][i][j];
-							m_Imagesrc.m_pBits[1][i][j] = m_Image.m_pBits[0][i][j];
-							m_Imagesrc.m_pBits[2][i][j] = m_Image.m_pBits[0][i][j];
+							m_Imagesrc.m_pBits[0][i][j] = Zxy;
+							m_Imagesrc.m_pBits[1][i][j] = Zxy;
+							m_Imagesrc.m_pBits[2][i][j] = Zxy;
 							break;
 						}
 						else {
@@ -1988,6 +1971,35 @@ void CImage_ProcessingView::OnColorsegment()
 			}
 		}
 	}
+
+	m_Image.flag = 1;
+	Invalidate(1);
+}
+
+
+void CImage_ProcessingView::OnHough()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获取高度和宽度
+	int h = m_Image.GetHeight();
+	if (!m_Imagesrc.IsNull()) m_Imagesrc.Destroy();
+	m_Imagesrc.Load(filename);
+	MyImage_ m_Image2;
+	m_Image2.Load(filename);
+	int bits = m_Image.GetBPP();
+	if (w & w - 1 != 0 || h & h - 1 != 0) return;
+	if (bits == 24 || bits == 32) {
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				int ave = 0.1140 *m_Image.m_pBits[0][i][j] + 0.5870 *m_Image.m_pBits[1][i][j] + 0.2989 *m_Image.m_pBits[2][i][j];
+				m_Image.m_pBits[0][i][j] = ave;
+				m_Image.m_pBits[1][i][j] = ave;
+				m_Image.m_pBits[2][i][j] = ave;
+			}
+		}
+	}
+
 
 
 	m_Image.flag = 1;
