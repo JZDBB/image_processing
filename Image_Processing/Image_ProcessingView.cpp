@@ -1926,15 +1926,23 @@ void CImage_ProcessingView::OnColorsegment()
 	int h = m_Image.GetHeight();//获得图像的高度
 	m_Imagesrc.Load(filename);
 
+	float R, G, B;
+	int D, count;
+	R = 0;
+	G = 0;
+	B = 0;
+	count = 0;
+	D = 40;
+
 	PictureDialog dlg(this);
 	if (IDOK == dlg.DoModal()) {
 		CPoint start, end;
 		start = dlg.m_startPoint;
 		end = dlg.m_endPoint;
 		
-		for (int i = 0; i < w; i++)
+		for (int i = 0; i < h; i++)
 		{
-			for (int j = 0; j < h; j++)
+			for (int j = 0; j < w; j++)
 			{
 				if (i == start.y || i == end.y) {
 					if (j > start.x && j <= end.x){
@@ -1950,11 +1958,37 @@ void CImage_ProcessingView::OnColorsegment()
 						m_Image.m_pBits[2][i][j] = 0;
 					}
 				}
+				if (i > start.y && i <= end.y && j > start.x && j > end.x) {
+					R += m_Imagesrc.m_pBits[2][i][j];
+					G += m_Imagesrc.m_pBits[1][i][j];
+					B += m_Imagesrc.m_pBits[0][i][j];
+					count++;
+				}
 			}
 		}
 	}
+	R /= count;
+	G /= count;
+	B /= count;
 
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			int r = m_Imagesrc.m_pBits[2][i][j];
+			int g = m_Imagesrc.m_pBits[1][i][j];
+			int b = m_Imagesrc.m_pBits[0][i][j];
 
+			float dis;
+			dis = pow(r - R, 2) + pow(g - G, 2) + pow(b - B, 2);
+			if (dis <= pow(D, 2)){
+				m_Imagesrc.m_pBits[2][i][j] = m_Imagesrc.m_pBits[1][i][j] = m_Imagesrc.m_pBits[0][i][j] = 255;
+			}
+			else{
+				m_Imagesrc.m_pBits[2][i][j] = m_Imagesrc.m_pBits[1][i][j] = m_Imagesrc.m_pBits[0][i][j] = 0;
+			}
+		}
+	}
 
 
 	m_Image.flag = 1;
