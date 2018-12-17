@@ -1932,7 +1932,7 @@ void CImage_ProcessingView::OnColorsegment()
 	G = 0;
 	B = 0;
 	count = 0;
-	D = 40;
+	D = 30;
 
 	PictureDialog dlg(this);
 	if (IDOK == dlg.DoModal()) {
@@ -1940,6 +1940,9 @@ void CImage_ProcessingView::OnColorsegment()
 		start = dlg.m_startPoint;
 		end = dlg.m_endPoint;
 		
+		float size;
+		size = (end.x - start.x)*(end.y - start.y);
+
 		for (int i = 0; i < h; i++)
 		{
 			for (int j = 0; j < w; j++)
@@ -1958,18 +1961,14 @@ void CImage_ProcessingView::OnColorsegment()
 						m_Image.m_pBits[2][i][j] = 0;
 					}
 				}
-				if (i > start.y && i <= end.y && j > start.x && j > end.x) {
-					R += m_Imagesrc.m_pBits[2][i][j];
-					G += m_Imagesrc.m_pBits[1][i][j];
-					B += m_Imagesrc.m_pBits[0][i][j];
-					count++;
+				if (i > start.y && i <= end.y && j > start.x && j <= end.x) {
+					R += m_Imagesrc.m_pBits[2][i][j] / size;
+					G += m_Imagesrc.m_pBits[1][i][j] / size;
+					B += m_Imagesrc.m_pBits[0][i][j] / size;
 				}
 			}
 		}
 	}
-	R /= count;
-	G /= count;
-	B /= count;
 
 	for (int i = 0; i < h; i++)
 	{
