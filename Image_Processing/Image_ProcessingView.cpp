@@ -1976,7 +1976,6 @@ void CImage_ProcessingView::OnColorsegment()
 	Invalidate(1);
 }
 
-
 void CImage_ProcessingView::OnHough()
 {
 	// TODO: 在此添加命令处理程序代码
