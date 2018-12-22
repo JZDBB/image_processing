@@ -111,8 +111,10 @@
     <None Include="UserImages.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="common.hpp" />
     <ClInclude Include="complex_mat.hpp" />
     <ClInclude Include="FFT_transform.hpp" />
+    <ClInclude Include="hough.hpp" />
     <ClInclude Include="Image_Processing.h" />
     <ClInclude Include="Image_ProcessingDoc.h" />
     <ClInclude Include="Image_ProcessingView.h" />

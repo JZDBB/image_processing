@@ -1,8 +1,9 @@
 #ifndef FFT_TRANSFORM_HPP
 #define FFT_TRANSFORM_HPP
 #include "complex_mat.hpp"
+#include "common.hpp"
 using namespace std;
-#define PI 3.14159265359
+
 template <class T>
 void change(complex<T> *y, int len) {
 	int i, j, k;

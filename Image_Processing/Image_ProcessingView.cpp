@@ -19,7 +19,10 @@
 #include "paintHistDialog.h"
 #include "WindowSizeDialog.h"
 #include "PictureDialog.h"
+#include "hough.hpp"
+#include "common.hpp"
 #include "Image_ProcessingView.h"
+
 using namespace std;
 
 #define  E 2.718281828;
@@ -1987,7 +1990,6 @@ void CImage_ProcessingView::OnHough()
 	MyImage_ m_Image2;
 	m_Image2.Load(filename);
 	int bits = m_Image.GetBPP();
-	if (w & w - 1 != 0 || h & h - 1 != 0) return;
 	if (bits == 24 || bits == 32) {
 		for (int i = 0; i < h; i++) {
 			for (int j = 0; j < w; j++) {
@@ -1998,8 +2000,26 @@ void CImage_ProcessingView::OnHough()
 			}
 		}
 	}
+	int **imgarr = alloc2d<int>(h, w);
 
+	for (int i = 0; i < h; i++) {
+		for (int j = 0; j < w; j++) {
+			imgarr[i][j] = m_Image.m_pBits[0][i][j];
+		}
+	}
+	int & H = h;
+	int & W = w;
+	std::vector<std::pair<double, double>> lines = line_det(imgarr, H, W);
+	int** detected = alloc2d<int>(H, W);
+	drawline(detected, H, W, lines);
 
+	for (int row = 0; row < H; row++) {
+		for (int col = 0; col < W; col++) {
+			m_Image.m_pBits[0][row][col] = detected[row][col];
+			m_Image.m_pBits[1][row][col] = detected[row][col];
+			m_Image.m_pBits[2][row][col] = detected[row][col];
+		}
+	}
 
 	m_Image.flag = 1;
 	Invalidate(1);
