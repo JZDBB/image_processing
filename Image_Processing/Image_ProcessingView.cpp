@@ -2015,12 +2015,14 @@ void CImage_ProcessingView::OnHough()
 
 	for (int row = 0; row < H; row++) {
 		for (int col = 0; col < W; col++) {
-			m_Image.m_pBits[0][row][col] = detected[row][col];
-			m_Image.m_pBits[1][row][col] = detected[row][col];
-			m_Image.m_pBits[2][row][col] = detected[row][col];
+			if (detected[row][col] > 0) {
+				m_Image.m_pBits[0][row][col] = 0;
+				m_Image.m_pBits[1][row][col] = 0;
+				m_Image.m_pBits[2][row][col] = 255;
+			}
 		}
 	}
 
-	m_Image.flag = 1;
+	m_Image.flag = 0;
 	Invalidate(1);
 }

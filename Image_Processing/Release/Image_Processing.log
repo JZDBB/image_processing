@@ -1,5 +1,128 @@
-﻿  PictureDialog.cpp
+﻿  Image_ProcessingView.cpp
+c:\users\yn\desktop\image_processing\image_processing\hough.hpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+c:\users\yn\desktop\image_processing\image_processing\hough.hpp(33): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\hough.hpp(56): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\hough.hpp(68): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\hough.hpp(96): warning C4018: “<”: 有符号/无符号不匹配
+c:\users\yn\desktop\image_processing\image_processing\hough.hpp(98): warning C4018: “<”: 有符号/无符号不匹配
+c:\users\yn\desktop\image_processing\image_processing\hough.hpp(112): warning C4018: “<”: 有符号/无符号不匹配
+c:\users\yn\desktop\image_processing\image_processing\hough.hpp(125): warning C4018: “<”: 有符号/无符号不匹配
+c:\users\yn\desktop\image_processing\image_processing\hough.hpp(130): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\hough.hpp(136): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\hough.hpp(137): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(415): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(558): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(591): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(610): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(659): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(685): warning C4244: “+=”: 从“float”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(699): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(834): warning C4305: “初始化”: 从“double”到“float”截断
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(835): warning C4305: “初始化”: 从“double”到“float”截断
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(875): warning C4554: “&”: 检查运算符优先级是否存在的可能的错误；使用括号阐明优先级
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(879): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(936): warning C4554: “&”: 检查运算符优先级是否存在的可能的错误；使用括号阐明优先级
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(940): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(962): warning C4244: “初始化”: 从“_Ty”转换到“int”，可能丢失数据
+          with
+          [
+              _Ty=float
+          ]
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(981): warning C4554: “&”: 检查运算符优先级是否存在的可能的错误；使用括号阐明优先级
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(985): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1053): warning C4244: “初始化”: 从“_Ty”转换到“int”，可能丢失数据
+          with
+          [
+              _Ty=float
+          ]
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1076): warning C4554: “&”: 检查运算符优先级是否存在的可能的错误；使用括号阐明优先级
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1080): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1148): warning C4244: “初始化”: 从“_Ty”转换到“int”，可能丢失数据
+          with
+          [
+              _Ty=float
+          ]
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1171): warning C4554: “&”: 检查运算符优先级是否存在的可能的错误；使用括号阐明优先级
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1175): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1242): warning C4244: “初始化”: 从“_Ty”转换到“int”，可能丢失数据
+          with
+          [
+              _Ty=float
+          ]
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1265): warning C4554: “&”: 检查运算符优先级是否存在的可能的错误；使用括号阐明优先级
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1269): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1336): warning C4244: “初始化”: 从“_Ty”转换到“int”，可能丢失数据
+          with
+          [
+              _Ty=float
+          ]
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1359): warning C4554: “&”: 检查运算符优先级是否存在的可能的错误；使用括号阐明优先级
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1363): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1394): warning C4305: “初始化”: 从“double”到“float”截断
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1432): warning C4244: “初始化”: 从“_Ty”转换到“int”，可能丢失数据
+          with
+          [
+              _Ty=float
+          ]
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1455): warning C4554: “&”: 检查运算符优先级是否存在的可能的错误；使用括号阐明优先级
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1459): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1488): warning C4305: “初始化”: 从“double”到“float”截断
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1526): warning C4244: “初始化”: 从“_Ty”转换到“int”，可能丢失数据
+          with
+          [
+              _Ty=float
+          ]
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1566): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1576): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1603): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1604): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1605): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1655): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1750): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1752): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1753): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1754): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1757): warning C4244: “=”: 从“float”转换到“BYTE”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1759): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1760): warning C4244: “=”: 从“float”转换到“BYTE”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1763): warning C4244: “=”: 从“float”转换到“BYTE”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1788): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1831): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1833): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1834): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1835): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1836): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1838): warning C4244: “=”: 从“float”转换到“BYTE”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1840): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1841): warning C4244: “=”: 从“float”转换到“BYTE”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1844): warning C4244: “=”: 从“float”转换到“BYTE”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1856): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1871): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1872): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1876): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1877): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1878): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1883): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1884): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1885): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1890): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1891): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1892): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1896): warning C4244: “=”: 从“float”转换到“BYTE”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1897): warning C4244: “=”: 从“float”转换到“BYTE”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1898): warning C4244: “=”: 从“float”转换到“BYTE”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1930): warning C4244: “=”: 从“LONG”转换到“float”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1996): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.hpp(25): warning C4244: “参数”: 从“double”转换到“const std::complex<float>::_Ty”，可能丢失数据
+  c:\users\yn\desktop\image_processing\image_processing\fft_transform.hpp(70): note: 参见对正在编译的函数 模板 实例化“void fft<float>(std::complex<float> [],int)”的引用
+  c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(896): note: 参见对正在编译的函数 模板 实例化“void fft2<float>(std::complex<float> **,int,int)”的引用
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.hpp(42): warning C4244: “参数”: 从“int”转换到“const std::complex<float>::_Ty”，可能丢失数据
+  c:\users\yn\desktop\image_processing\image_processing\fft_transform.hpp(100): note: 参见对正在编译的函数 模板 实例化“void ifft<float>(std::complex<float> [],int)”的引用
+  c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(956): note: 参见对正在编译的函数 模板 实例化“void ifft2<float>(std::complex<float> **,int,int)”的引用
+c:\users\yn\desktop\image_processing\image_processing\fft_transform.hpp(46): warning C4244: “参数”: 从“double”转换到“const std::complex<float>::_Ty”，可能丢失数据
   正在生成代码
-  All 788 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  3 of 788 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
   Image_Processing.vcxproj -> C:\Users\yn\Desktop\image_processing\Release\Image_Processing.exe
