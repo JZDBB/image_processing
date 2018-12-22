@@ -81,6 +81,12 @@
     <ClInclude Include="hough.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="bgt.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="otsu.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Image_Processing.cpp">

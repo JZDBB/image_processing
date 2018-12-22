@@ -90,6 +90,8 @@ public:
 	afx_msg void OnEquali();
 	afx_msg void OnColorsegment();
 	afx_msg void OnHough();
+	afx_msg void OnBgtsegment();
+	afx_msg void OnOtsusegment();
 };
 
 #ifndef _DEBUG  // Image_ProcessingView.cpp 中的调试版本

@@ -21,6 +21,8 @@
 #include "PictureDialog.h"
 #include "hough.hpp"
 #include "common.hpp"
+#include "bgt.hpp"
+#include "otsu.hpp"
 #include "Image_ProcessingView.h"
 
 using namespace std;
@@ -75,6 +77,8 @@ BEGIN_MESSAGE_MAP(CImage_ProcessingView, CScrollView)
 	ON_COMMAND(ID_EQUALI, &CImage_ProcessingView::OnEquali)
 	ON_COMMAND(ID_COLORSEGMENT, &CImage_ProcessingView::OnColorsegment)
 	ON_COMMAND(ID_HOUGH, &CImage_ProcessingView::OnHough)
+	ON_COMMAND(ID_BGTSEGMENT, &CImage_ProcessingView::OnBgtsegment)
+	ON_COMMAND(ID_OTSUSEGMENT, &CImage_ProcessingView::OnOtsusegment)
 END_MESSAGE_MAP()
 
 // CImage_ProcessingView 构造/析构
@@ -2020,6 +2024,100 @@ void CImage_ProcessingView::OnHough()
 				m_Image.m_pBits[1][row][col] = 0;
 				m_Image.m_pBits[2][row][col] = 255;
 			}
+		}
+	}
+
+	m_Image.flag = 0;
+	Invalidate(1);
+}
+
+
+void CImage_ProcessingView::OnBgtsegment()
+{
+	// TODO: 在此添加命令处理程序代码
+	// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获取高度和宽度
+	int h = m_Image.GetHeight();
+	if (!m_Imagesrc.IsNull()) m_Imagesrc.Destroy();
+	m_Imagesrc.Load(filename);
+	MyImage_ m_Image2;
+	m_Image2.Load(filename);
+	int bits = m_Image.GetBPP();
+	if (bits == 24 || bits == 32) {
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				int ave = 0.1140 *m_Image.m_pBits[0][i][j] + 0.5870 *m_Image.m_pBits[1][i][j] + 0.2989 *m_Image.m_pBits[2][i][j];
+				m_Image.m_pBits[0][i][j] = ave;
+				m_Image.m_pBits[1][i][j] = ave;
+				m_Image.m_pBits[2][i][j] = ave;
+			}
+		}
+	}
+	int **imgarr = alloc2d<int>(h, w);
+
+	for (int i = 0; i < h; i++) {
+		for (int j = 0; j < w; j++) {
+			imgarr[i][j] = m_Image.m_pBits[0][i][j];
+		}
+	}
+	int & H = h;
+	int & W = w;
+	int **dst = alloc2d<int>(H, W);
+	bgt(imgarr, dst, H, W);
+
+	for (int row = 0; row < H; row++) {
+		for (int col = 0; col < W; col++) {
+			m_Image.m_pBits[0][row][col] = dst[row][col];
+			m_Image.m_pBits[1][row][col] = dst[row][col];
+			m_Image.m_pBits[2][row][col] = dst[row][col];
+		}
+	}
+
+	m_Image.flag = 0;
+	Invalidate(1);
+}
+
+
+void CImage_ProcessingView::OnOtsusegment()
+{
+	// TODO: 在此添加命令处理程序代码
+// TODO: 在此添加命令处理程序代码
+	if (m_Image.IsNull()) return;//判断图像是否为空，如果对空图像进行操作会出现未知的错误
+	int w = m_Image.GetWidth();//获取高度和宽度
+	int h = m_Image.GetHeight();
+	if (!m_Imagesrc.IsNull()) m_Imagesrc.Destroy();
+	m_Imagesrc.Load(filename);
+	MyImage_ m_Image2;
+	m_Image2.Load(filename);
+	int bits = m_Image.GetBPP();
+	if (bits == 24 || bits == 32) {
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				int ave = 0.1140 *m_Image.m_pBits[0][i][j] + 0.5870 *m_Image.m_pBits[1][i][j] + 0.2989 *m_Image.m_pBits[2][i][j];
+				m_Image.m_pBits[0][i][j] = ave;
+				m_Image.m_pBits[1][i][j] = ave;
+				m_Image.m_pBits[2][i][j] = ave;
+			}
+		}
+	}
+	int **imgarr = alloc2d<int>(h, w);
+
+	for (int i = 0; i < h; i++) {
+		for (int j = 0; j < w; j++) {
+			imgarr[i][j] = m_Image.m_pBits[0][i][j];
+		}
+	}
+	int & H = h;
+	int & W = w;
+	int **dst = alloc2d<int>(H, W);
+	otsu(imgarr, dst, H, W);
+
+	for (int row = 0; row < H; row++) {
+		for (int col = 0; col < W; col++) {
+			m_Image.m_pBits[0][row][col] = dst[row][col];
+			m_Image.m_pBits[1][row][col] = dst[row][col];
+			m_Image.m_pBits[2][row][col] = dst[row][col];
 		}
 	}
 

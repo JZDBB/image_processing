@@ -111,6 +111,7 @@
     <None Include="UserImages.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bgt.hpp" />
     <ClInclude Include="common.hpp" />
     <ClInclude Include="complex_mat.hpp" />
     <ClInclude Include="FFT_transform.hpp" />
@@ -120,6 +121,7 @@
     <ClInclude Include="Image_ProcessingView.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MyImage_.h" />
+    <ClInclude Include="otsu.hpp" />
     <ClInclude Include="paintHistDialog.h" />
     <ClInclude Include="PictureDialog.h" />
     <ClInclude Include="Resource.h" />
