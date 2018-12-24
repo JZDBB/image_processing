@@ -1,6 +1,3 @@
-//
-// Created by yqi on 18-12-21.
-//
 // 霍尔变换直线检测
 
 #include <vector>

@@ -1,6 +1,3 @@
-//
-// Created by yqi on 18-12-21.
-//
 // 基本全局阈值法
 #ifndef HOUGH_BGT_HPP
 #define HOUGH_BGT_HPP

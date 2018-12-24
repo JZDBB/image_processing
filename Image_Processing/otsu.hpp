@@ -1,7 +1,4 @@
-//
-// Created by yqi on 18-12-21.
-//
-
+// 最大方差法
 #ifndef HOUGH_OTSU_HPP
 #define HOUGH_OTSU_HPP
 
