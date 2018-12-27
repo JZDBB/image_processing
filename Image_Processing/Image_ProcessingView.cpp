@@ -2027,7 +2027,7 @@ void CImage_ProcessingView::OnColorsegment()
 			}
 		}
 
-		m_Image.flag = 0;
+		m_Image.flag = 1;
 		Invalidate(1);
 	}
 
@@ -2074,7 +2074,7 @@ void CImage_ProcessingView::OnBgtsegment()
 		}
 	}
 
-	m_Image.flag = 0;
+	m_Image.flag = 1;
 	Invalidate(1);
 }
 
@@ -2121,6 +2121,6 @@ void CImage_ProcessingView::OnOtsusegment()
 		}
 	}
 
-	m_Image.flag = 0;
+	m_Image.flag = 1;
 	Invalidate(1);
 }

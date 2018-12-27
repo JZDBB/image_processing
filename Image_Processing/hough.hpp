@@ -64,13 +64,13 @@ void drawcurve(int** hough_space, int x, int y){
         double theta = PI * theta_id / 999.;
         double r = x * cos(theta) + y * sin(theta);
         int yy = 0.999 * r + 499.5;
-        if (yy < 0) yy = 0;
-        if (yy >= 1000) yy = 999;
+        if (yy < 0) break;
+        if (yy >= 1000) break;
         hough_space[yy][theta_id] += 1;
     }
 }
 
-std::vector<std::pair<double, double>> Hough(int** src, int row, int col, int val, int threshold=300){
+std::vector<std::pair<double, double>> Hough(int** src, int row, int col, int val, int threshold=70){
     int** hough_space = alloc2d<int>(1000, 1000);
 
     for(int i = 0; i < row; i++){
