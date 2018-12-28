@@ -70,7 +70,7 @@ void drawcurve(int** hough_space, int x, int y){
     }
 }
 
-std::vector<std::pair<double, double>> Hough(int** src, int row, int col, int val, int threshold=70){
+std::vector<std::pair<double, double>> Hough(int** src, int row, int col, int val, int threshold=200){
     int** hough_space = alloc2d<int>(1000, 1000);
 
     for(int i = 0; i < row; i++){
@@ -96,7 +96,7 @@ std::vector<std::pair<double, double>> Hough(int** src, int row, int col, int va
         for (int j = i + 1; j < result.size(); j++){
             std::pair<std::pair<double, double>, int> &res2 = result[j];
             if (res2.second == 0) continue;
-            if (abs(res1.first.first - res2.first.first)<30 && abs(res1.first.second - res2.first.second) < 30){
+            if (abs(res1.first.first - res2.first.first)<40 && abs(res1.first.second - res2.first.second) < 0.12){
                 if (res1.second > res2.second){
                     res2.second = 0;
                 } else{

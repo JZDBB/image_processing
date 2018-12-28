@@ -113,8 +113,8 @@ c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1
 c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1902): warning C4244: “=”: 从“float”转换到“BYTE”，可能丢失数据
 c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(1934): warning C4244: “=”: 从“LONG”转换到“float”，可能丢失数据
 c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(2000): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(2050): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(2097): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(2054): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(2101): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
 c:\users\yn\desktop\image_processing\image_processing\fft_transform.hpp(25): warning C4244: “参数”: 从“double”转换到“const std::complex<float>::_Ty”，可能丢失数据
   c:\users\yn\desktop\image_processing\image_processing\fft_transform.hpp(70): note: 参见对正在编译的函数 模板 实例化“void fft<float>(std::complex<float> [],int)”的引用
   c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(900): note: 参见对正在编译的函数 模板 实例化“void fft2<float>(std::complex<float> **,int,int)”的引用
@@ -123,7 +123,7 @@ c:\users\yn\desktop\image_processing\image_processing\fft_transform.hpp(42): war
   c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(960): note: 参见对正在编译的函数 模板 实例化“void ifft2<float>(std::complex<float> **,int,int)”的引用
 c:\users\yn\desktop\image_processing\image_processing\fft_transform.hpp(46): warning C4244: “参数”: 从“double”转换到“const std::complex<float>::_Ty”，可能丢失数据
   正在生成代码
-  3 of 792 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+  2 of 792 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     1 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成

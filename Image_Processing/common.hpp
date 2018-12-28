@@ -24,4 +24,9 @@ void free2d(T** p, int row, int col){
     }
     delete[] p;
 }
+
+//inline double abs(double a) {
+//	return a > 0 ? a : -a;
+//}
+
 #endif //HOUGH_COMMON_H

@@ -2021,8 +2021,12 @@ void CImage_ProcessingView::OnColorsegment()
 			for (int col = 0; col < W; col++) {
 				if (detected[row][col] > 0) {
 					m_Image.m_pBits[0][row][col] = 0;
-					m_Image.m_pBits[1][row][col] = 0;
-					m_Image.m_pBits[2][row][col] = 255;
+					m_Image.m_pBits[1][row][col] = 255;
+					m_Image.m_pBits[2][row][col] = 0;
+				}else{
+					m_Image.m_pBits[0][row][col] = m_Imagesrc.m_pBits[0][row][col];
+					m_Image.m_pBits[1][row][col] = m_Imagesrc.m_pBits[1][row][col];
+					m_Image.m_pBits[2][row][col] = m_Imagesrc.m_pBits[2][row][col];
 				}
 			}
 		}
