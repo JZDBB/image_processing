@@ -123,8 +123,8 @@ c:\users\yn\desktop\image_processing\image_processing\fft_transform.hpp(42): war
   c:\users\yn\desktop\image_processing\image_processing\image_processingview.cpp(960): note: 参见对正在编译的函数 模板 实例化“void ifft2<float>(std::complex<float> **,int,int)”的引用
 c:\users\yn\desktop\image_processing\image_processing\fft_transform.hpp(46): warning C4244: “参数”: 从“double”转换到“const std::complex<float>::_Ty”，可能丢失数据
   正在生成代码
-  2 of 792 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
+  0 of 792 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
   Image_Processing.vcxproj -> C:\Users\yn\Desktop\image_processing\Release\Image_Processing.exe
